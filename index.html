@@ -62,6 +62,15 @@
             position.coords.latitude,
             position.coords.longitude,
           ]);
+          marker
+            .bindPopup(
+              "<b>Ubicación específica</b><br>" +
+                position.coords.latitude +
+                ", " +
+                position.coords.longitude +
+                ""
+            )
+            .openPopup();
         } catch (e) {
           console.log(e);
         }
