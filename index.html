@@ -23,13 +23,25 @@
           "Latitud: " +
           position.coords.latitude +
           "<br>Longitud: " +
-          position.coords.longitude;
+          position.coords.longitude +
+          "<br>Exactitud: " +
+          position.coords.accuracy +
+          " metros." +
+          "<br>Altitud: " +
+          position.coords.altitude +
+          " metros." +
+          "<br>Exactitud de la altitud: " +
+          position.coords.altitudeAccuracy +
+          " metros." +
+          "<br>Velocidad: " +
+          position.coords.speed +
+          " metros/segundo." +
+          "<br>Rumbo: " +
+          position.coords.heading +
+          " grados." +
+          "<br>Fecha y hora: " +
+          position.timestamp;
       }
-
-      // Actualizar la ubicación cada 4 segundos
-      setInterval(function () {
-        getLocation();
-      }, 4000);
     </script>
   </body>
 </html>
