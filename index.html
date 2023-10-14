@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Obtener ubicación actual</title>
+  </head>
+  <body>
+    <h1>Obtener ubicación actual</h1>
+    <p>La ubicación actual se actualizará automáticamente cada 4 segundos:</p>
+    <p id="demo"></p>
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(showPosition);
+        } else {
+          document.getElementById("demo").innerHTML =
+            "La geolocalización no es compatible con este navegador.";
+        }
+      }
+
+      function showPosition(position) {
+        document.getElementById("demo").innerHTML =
+          "Latitud: " +
+          position.coords.latitude +
+          "<br>Longitud: " +
+          position.coords.longitude;
+      }
+
+      // Actualizar la ubicación cada 4 segundos
+      setInterval(function () {
+        getLocation();
+      }, 4000);
+    </script>
+  </body>
+</html>
