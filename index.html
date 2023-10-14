@@ -53,6 +53,18 @@
           " grados." +
           "<br>Fecha y hora: " +
           new Date(position.timestamp).toLocaleString();
+        try {
+          map.setView(
+            [position.coords.latitude, position.coords.longitude],
+            13
+          );
+          marker.setLatLng([
+            position.coords.latitude,
+            position.coords.longitude,
+          ]);
+        } catch (e) {
+          console.log(e);
+        }
       }
       getLocation();
     </script>
