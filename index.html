@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Obtener ubicación actual</title>
+    <title>Arbol proyect</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0" />
   </head>
   <body>
-    <h1>Obtener ubicación actual</h1>
-    <p>La ubicación actual se actualizará automáticamente cada 4 segundos:</p>
+    <h1>Ultima ubicación</h1>
     <p id="demo"></p>
-
+    <div id="map"></div>
     <script>
       function getLocation() {
         if (navigator.geolocation) {
@@ -17,7 +18,6 @@
             "La geolocalización no es compatible con este navegador.";
         }
       }
-
       function showPosition(position) {
         document.getElementById("demo").innerHTML =
           "Latitud: " +
@@ -42,6 +42,7 @@
           "<br>Fecha y hora: " +
           position.timestamp;
       }
+      getLocation();
     </script>
   </body>
 </html>
