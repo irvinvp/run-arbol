@@ -40,7 +40,7 @@
           position.coords.heading +
           " grados." +
           "<br>Fecha y hora: " +
-          position.timestamp;
+          new Date(position.timestamp).toLocaleDateString();
       }
       getLocation();
     </script>
