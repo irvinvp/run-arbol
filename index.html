@@ -4,11 +4,23 @@
     <title>Arbol proyect</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
+    />
+    <style>
+      #mapid {
+        height: 400px;
+      }
+    </style>
   </head>
   <body>
     <h1>Ultima ubicación</h1>
     <p id="demo"></p>
-    <div id="map"></div>
+    <div id="mapid"></div>
     <script>
       function getLocation() {
         if (navigator.geolocation) {
@@ -40,9 +52,25 @@
           position.coords.heading +
           " grados." +
           "<br>Fecha y hora: " +
-          new Date(position.timestamp).toLocaleDateString();
+          new Date(position.timestamp).toLocaleString();
       }
       getLocation();
+    </script>
+    <script>
+      var map = L.map("mapid").setView([40.7128, -74.006], 13);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+        id: "mapbox.streets",
+      }).addTo(map);
+
+      var marker = L.marker([40.7128, -74.006]).addTo(map);
+
+      marker
+        .bindPopup("<b>Ubicación específica</b><br>40.7128, -74.0060")
+        .openPopup();
     </script>
   </body>
 </html>
