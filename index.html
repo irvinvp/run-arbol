@@ -24,11 +24,13 @@
     <script>
       function getLocation() {
         if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
+          navigator.geolocation.watchPosition(showPosition,showError,{enableHighAccuracy:true});
         } else {
           document.getElementById("demo").innerHTML =
             "La geolocalización no es compatible con este navegador.";
         }
+      }
+      function showError(e){
       }
       function showPosition(position) {
         document.getElementById("demo").innerHTML =
