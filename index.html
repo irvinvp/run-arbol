@@ -21,17 +21,19 @@
     <h1>Ultima ubicación</h1>
     <p id="demo"></p>
     <div id="mapid"></div>
+    <button onclick="speak()">Hablar</button>
     <script>
       function getLocation() {
         if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition,showError,{enableHighAccuracy:true});
+          navigator.geolocation.watchPosition(showPosition, showError, {
+            enableHighAccuracy: true,
+          });
         } else {
           document.getElementById("demo").innerHTML =
             "La geolocalización no es compatible con este navegador.";
         }
       }
-      function showError(e){
-      }
+      function showError(e) {}
       function showPosition(position) {
         document.getElementById("demo").innerHTML =
           "Latitud: " +
@@ -94,6 +96,15 @@
       marker
         .bindPopup("<b>Ubicación específica</b><br>40.7128, -74.0060")
         .openPopup();
+    </script>
+    <script>
+      var synthesis = window.speechSynthesis;
+      var utterance = new SpeechSynthesisUtterance();
+      utterance.lang = "es-ES";
+      utterance.text = "Hola, soy un árbol.";
+      function speak() {
+        synthesis.speak(utterance);
+      }
     </script>
   </body>
 </html>
