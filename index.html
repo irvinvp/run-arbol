@@ -47,12 +47,16 @@
           (position.coords.altitude ? parseInt(position.coords.altitude) : 0) +
           " metros." +
           "<br>Velocidad: " +
-          (position.coords.speed ? parseInt(convertirVelocidad(position.coords.speed)) : 0)+
+          (position.coords.speed
+            ? parseInt(convertirVelocidad(position.coords.speed))
+            : 0) +
           "<br>Rumbo: " +
-          parseInt(position.coords.heading) +
-          " grados." +
-          "<br>Fecha y hora: " +
-          new Date(position.timestamp).toLocaleString();
+          position.coords.heading
+            ? parseInt(position.coords.heading)
+            : 0 +
+              " grados." +
+              "<br>Fecha y hora: " +
+              new Date(position.timestamp).toLocaleString();
         try {
           map.setView(
             [position.coords.latitude, position.coords.longitude],
