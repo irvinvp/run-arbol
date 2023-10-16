@@ -51,12 +51,10 @@
             ? parseInt(convertirVelocidad(position.coords.speed))
             : 0) +
           "<br>Rumbo: " +
-          position.coords.heading
-            ? parseInt(position.coords.heading)
-            : 0 +
-              " grados." +
-              "<br>Fecha y hora: " +
-              new Date(position.timestamp).toLocaleString();
+          (position.coords.heading ? parseInt(position.coords.heading) : 0) +
+          " grados." +
+          "<br>Fecha y hora: " +
+          new Date(position.timestamp).toLocaleString();
         try {
           map.setView(
             [position.coords.latitude, position.coords.longitude],
