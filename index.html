@@ -41,19 +41,15 @@
           "<br>Longitud: " +
           position.coords.longitude +
           "<br>Exactitud: " +
-          position.coords.accuracy +
+          parseInt(position.coords.accuracy) +
           " metros." +
           "<br>Altitud: " +
-          position.coords.altitude +
-          " metros." +
-          "<br>Exactitud de la altitud: " +
-          position.coords.altitudeAccuracy +
+          parseInt(position.coords.altitude) +
           " metros." +
           "<br>Velocidad: " +
-          position.coords.speed +
-          " metros/segundo." +
+          parseInt(convertirVelocidad(position.coords.speed)) +
           "<br>Rumbo: " +
-          position.coords.heading +
+          parseInt(position.coords.heading) +
           " grados." +
           "<br>Fecha y hora: " +
           new Date(position.timestamp).toLocaleString();
@@ -101,9 +97,19 @@
       var synthesis = window.speechSynthesis;
       var utterance = new SpeechSynthesisUtterance();
       utterance.lang = "es-ES";
-      utterance.text = "Hola, soy un árbol.";
+      utterance.text = "Primera vuelta completada.";
       function speak() {
         synthesis.speak(utterance);
+      }
+    </script>
+    <script>
+      function convertirVelocidad(metrosPorSegundo) {
+        const kilometrosPorHora = metrosPorSegundo * 3.6;
+        const minutosPorKilometro = Math.floor(60 / kilometrosPorHora);
+        const segundosPorKilometro = Math.round(
+          (60 / kilometrosPorHora - minutosPorKilometro) * 60
+        );
+        return `${minutosPorKilometro} minutos y ${segundosPorKilometro} segundos por kilómetro`;
       }
     </script>
   </body>
