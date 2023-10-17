@@ -24,6 +24,13 @@
     <div id="mapid"></div>
     <textarea id="errorLog" rows="10" cols="50"></textarea>
     <script>
+      try {
+        navigator.wakeLock.request("screen");
+      } catch (e) {
+        console.log(e);
+      }
+    </script>
+    <script>
       window.onerror = function (message, source, lineno, colno, error) {
         var errorLog = document.getElementById("errorLog");
         var errorMessage =
@@ -395,6 +402,7 @@
         vuelta = 0;
         utterance.text = "Iniciando ruta.";
         speak();
+        document.documentElement.requestFullscreen();
       }
     </script>
   </body>
