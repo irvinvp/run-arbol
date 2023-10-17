@@ -11,7 +11,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-kml/2.6.5/leaflet-kml.js"></script>
     <style>
       #mapid {
         height: 400px;
@@ -81,8 +80,6 @@
       getLocation();
     </script>
     <script>
-      var kmzUrl = "Arbol.kmz";
-
       var map = L.map("mapid").setView([40.7128, -74.006], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -92,19 +89,11 @@
         id: "mapbox.streets",
       }).addTo(map);
 
-      L.layerGroup([vectorLayer]).addTo(map);
-
       var marker = L.marker([40.7128, -74.006]).addTo(map);
 
       marker
         .bindPopup("<b>Ubicación específica</b><br>40.7128, -74.0060")
         .openPopup();
-
-      var kmzLayer = new L.KML(kmzUrl);
-      kmzLayer.on("loaded", function () {
-        map.fitBounds(kmzLayer.getBounds());
-      });
-      kmzLayer.addTo(map);
     </script>
     <script>
       var synthesis = window.speechSynthesis;
