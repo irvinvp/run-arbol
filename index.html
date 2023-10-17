@@ -20,6 +20,7 @@
   <body>
     <p id="demo"></p>
     <button onclick="speak()">Iniciar recorrido</button>
+    <button onclick="send_simultation()">Iniciar simulacion</button>
     <div id="mapid"></div>
     <textarea id="errorLog" rows="10" cols="50"></textarea>
     <script>
@@ -42,6 +43,50 @@
         return true;
       };
       // status 0 inicial, 1 primera vuelta, 2 segunda vuelta
+      let simulation = [
+        [19.264699378148247, -99.63149509792696],
+        [19.2646721, -99.6315286],
+        [19.264662, -99.632336],
+        [19.2646873, -99.632564],
+        [19.2647506, -99.6328134],
+        [19.264738, -99.6330467],
+        [19.2647253, -99.6331889],
+        [19.2646772, -99.6332667],
+        [19.264624, -99.6332908],
+        [19.2644949, -99.6333337],
+        [19.2643961, -99.6333525],
+        [19.2643404, -99.6333337],
+        [19.2643075, -99.6332801],
+        [19.2642949, -99.633197],
+        [19.26431, -99.6330923],
+        [19.2643176, -99.6329582],
+        [19.2642695, -99.6328375],
+        [19.2640948, -99.6326095],
+        [19.2638315, -99.6325505],
+        [19.2637631, -99.6324996],
+        [19.2633681, -99.6319336],
+        [19.2632593, -99.6317378],
+        [19.2632137, -99.6314911],
+        [19.2632137, -99.6312953],
+        [19.2632795, -99.6311451],
+        [19.2634112, -99.6310861],
+        [19.2635251, -99.631019],
+        [19.2636163, -99.6308715],
+        [19.2636188, -99.6307722],
+        [19.2636644, -99.6307186],
+        [19.2637277, -99.6306676],
+        [19.2639201, -99.6306059],
+        [19.2640746, -99.6306462],
+        [19.2641328, -99.6306945],
+        [19.2641733, -99.6308232],
+        [19.2642164, -99.6309171],
+        [19.2642898, -99.6309707],
+        [19.2645101, -99.631019],
+        [19.264581, -99.6310861],
+        [19.2646417, -99.6311665],
+        [19.2646595, -99.6312309],
+        [19.2646721, -99.6315286],
+      ];
       let inicio = [
         [19.2647411, -99.6316151],
         [19.264593, -99.6316124],
@@ -306,6 +351,32 @@
           } else {
             return false;
           }
+        }
+      }
+      let simulation_index = 0;
+      let simulation_vuelta = 0;
+      function send_simultation() {
+        if (simulation_index < simulation.length) {
+          showPosition({
+            coords: {
+              latitude: simulation[simulation_index][0],
+              longitude: simulation[simulation_index][1],
+            },
+            timestamp: Date.now(),
+            accuracy: 0,
+            altitude: 0,
+            altitudeAccuracy: 0,
+            heading: 0,
+            speed: 0,
+          });
+          simulation_index++;
+          simulation_vuelta++;
+          setTimeout(send_simultation, 1000);
+        } else if (simulation_vuelta < 8) {
+          simulation_index = 0;
+          send_simultation();
+        } else {
+          alert("Simulacion terminada");
         }
       }
     </script>
