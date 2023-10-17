@@ -19,7 +19,7 @@
   </head>
   <body>
     <p id="demo"></p>
-    <button onclick="speak()">Iniciar recorrido</button>
+    <button onclick="iniciar()">Iniciar recorrido</button>
     <button onclick="send_simultation()">Iniciar simulacion</button>
     <div id="mapid"></div>
     <textarea id="errorLog" rows="10" cols="50"></textarea>
@@ -300,7 +300,6 @@
       utterance.text = "Iniciando ruta.";
       function speak() {
         synthesis.speak(utterance);
-        status = 0;
       }
 
       function convertirVelocidad(metrosPorSegundo) {
@@ -387,6 +386,12 @@
           alert("Simulacion terminada");
           simulacion_status = false;
         }
+      }
+      function iniciar() {
+        status = 0;
+        vuelta = 0;
+        utterance.text = "Iniciando ruta.";
+        speak();
       }
     </script>
   </body>
