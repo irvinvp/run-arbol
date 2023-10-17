@@ -138,6 +138,9 @@
       }
       function showError(e) {}
       function showPosition(position) {
+        if (!position.simulation && simulacion_status) {
+          return;
+        }
         try {
           map.setView(
             [position.coords.latitude, position.coords.longitude],
@@ -355,7 +358,9 @@
       }
       let simulation_index = 0;
       let simulation_vuelta = 0;
+      let simulacion_status = false;
       function send_simultation() {
+        simulacion_status = true;
         if (simulation_index < simulation.length) {
           showPosition({
             coords: {
@@ -368,17 +373,19 @@
             altitudeAccuracy: 0,
             heading: 0,
             speed: 0,
+            simulation: true,
           });
           simulation_index++;
-          simulation_vuelta++;
           setTimeout(send_simultation, 1000);
         } else if (simulation_vuelta < 8) {
           simulation_index = 0;
-          send_simultation();
+          simulation_vuelta++;
+          setTimeout(send_simultation, 1000);
         } else {
           simulation_index = 0;
           simulation_vuelta = 0;
           alert("Simulacion terminada");
+          simulacion_status = false;
         }
       }
     </script>
