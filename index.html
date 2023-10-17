@@ -11,6 +11,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-kml/2.6.5/leaflet-kml.js"></script>
     <style>
       #mapid {
         height: 400px;
@@ -80,12 +81,7 @@
       getLocation();
     </script>
     <script>
-      var vectorLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({
-          format: new ol.format.KML(),
-          url: "Arbol.kmz",
-        }),
-      });
+      var kmzUrl = "Arbol.kmz";
 
       var map = L.map("mapid").setView([40.7128, -74.006], 13);
 
@@ -103,6 +99,12 @@
       marker
         .bindPopup("<b>Ubicación específica</b><br>40.7128, -74.0060")
         .openPopup();
+
+      var kmzLayer = new L.KML(kmzUrl);
+      kmzLayer.on("loaded", function () {
+        map.fitBounds(kmzLayer.getBounds());
+      });
+      kmzLayer.addTo(map);
     </script>
     <script>
       var synthesis = window.speechSynthesis;
