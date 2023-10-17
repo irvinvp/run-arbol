@@ -197,7 +197,8 @@
               )
             ) {
               status = 3;
-              utterance.text = "Primer cuarto.";
+              utterance.text =
+                "Primer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
             }
           } else if (status == 3) {
@@ -211,7 +212,8 @@
               )
             ) {
               status = 4;
-              utterance.text = "Segundo cuarto.";
+              utterance.text =
+                "Segundo cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
             }
           } else if (status == 4) {
@@ -225,7 +227,8 @@
               )
             ) {
               status = 5;
-              utterance.text = "Tercer cuarto.";
+              utterance.text =
+                "Tercer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
             }
           } else if (status == 5) {
@@ -376,7 +379,7 @@
           });
           simulation_index++;
           setTimeout(send_simultation, 1000);
-        } else if (simulation_vuelta < 8) {
+        } else if (simulation_vuelta < 4) {
           simulation_index = 0;
           simulation_vuelta++;
           setTimeout(send_simultation, 1000);
