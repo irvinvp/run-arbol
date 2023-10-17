@@ -48,7 +48,7 @@
           " metros." +
           "<br>Velocidad: " +
           (position.coords.speed
-            ? parseInt(convertirVelocidad(position.coords.speed))
+            ? convertirVelocidad(position.coords.speed)
             : 0) +
           "<br>Rumbo: " +
           (position.coords.heading ? parseInt(position.coords.heading) : 0) +
