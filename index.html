@@ -80,6 +80,13 @@
       getLocation();
     </script>
     <script>
+      var vectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          format: new ol.format.KML(),
+          url: "Arbol.kmz",
+        }),
+      });
+
       var map = L.map("mapid").setView([40.7128, -74.006], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -88,6 +95,8 @@
         maxZoom: 18,
         id: "mapbox.streets",
       }).addTo(map);
+
+      L.layerGroup([vectorLayer]).addTo(map);
 
       var marker = L.marker([40.7128, -74.006]).addTo(map);
 
