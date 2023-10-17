@@ -13,7 +13,7 @@
     />
     <style>
       #mapid {
-        height: 400px;
+        height: 200px;
       }
     </style>
   </head>
@@ -21,8 +21,27 @@
     <h1>Ultima ubicación</h1>
     <p id="demo"></p>
     <button onclick="speak()">Iniciar recorrido</button>
+    <textarea id="errorLog" rows="10" cols="50"></textarea>
     <div id="mapid"></div>
     <script>
+      window.onerror = function (message, source, lineno, colno, error) {
+        var errorLog = document.getElementById("errorLog");
+        var errorMessage =
+          "Error: " +
+          message +
+          "\n" +
+          "Source: " +
+          source +
+          "\n" +
+          "Line: " +
+          lineno +
+          "\n" +
+          "Column: " +
+          colno +
+          "\n\n";
+        errorLog.value += errorMessage;
+        return true;
+      };
       // status 0 inicial, 1 primera vuelta, 2 segunda vuelta
       let inicio = [
         [19.2647411, -99.6316151],
