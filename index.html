@@ -20,9 +20,49 @@
   <body>
     <h1>Ultima ubicación</h1>
     <p id="demo"></p>
+    <button onclick="speak()">Iniciar recorrido</button>
     <div id="mapid"></div>
-    <button onclick="speak()">Hablar</button>
     <script>
+      // status 0 inicial, 1 primera vuelta, 2 segunda vuelta
+      let inicio = [
+        [19.2647411, -99.6316151],
+        [19.264593, -99.6316124],
+        [19.2645968, -99.6314944],
+        [19.2647386, -99.6314958],
+        [19.2647411, -99.6316151],
+      ];
+      let salida = [
+        [19.2648247, -99.6316226],
+        [19.26455, -99.6316105],
+      ];
+      let paso0 = [
+        [19.2645551, -99.6334207],
+        [19.2644879, -99.6331779],
+      ];
+      let paso1 = [
+        [19.2636733, -99.6325924],
+        [19.2639062, -99.632414],
+      ];
+      let paso2 = [
+        [19.2636836, -99.6310432],
+        [19.2634873, -99.6307697],
+      ];
+      let status = -1;
+      let vuelta = 0;
+      let vueta_text = [
+        "primera",
+        "segunda",
+        "tercera",
+        "cuarta",
+        "quinta",
+        "sexta",
+        "septima",
+        "octava",
+        "novena",
+        "decima",
+      ];
+      let last_coord = [0, 0];
+
       function getLocation() {
         if (navigator.geolocation) {
           navigator.geolocation.watchPosition(showPosition, showError, {
@@ -35,26 +75,6 @@
       }
       function showError(e) {}
       function showPosition(position) {
-        document.getElementById("demo").innerHTML =
-          "Latitud: " +
-          position.coords.latitude +
-          "<br>Longitud: " +
-          position.coords.longitude +
-          "<br>Exactitud: " +
-          parseInt(position.coords.accuracy) +
-          " metros." +
-          "<br>Altitud: " +
-          (position.coords.altitude ? parseInt(position.coords.altitude) : 0) +
-          " metros." +
-          "<br>Velocidad: " +
-          (position.coords.speed
-            ? convertirVelocidad(position.coords.speed)
-            : 0) +
-          "<br>Rumbo: " +
-          (position.coords.heading ? parseInt(position.coords.heading) : 0) +
-          " grados." +
-          "<br>Fecha y hora: " +
-          new Date(position.timestamp).toLocaleString();
         try {
           map.setView(
             [position.coords.latitude, position.coords.longitude],
@@ -73,13 +93,138 @@
                 ""
             )
             .openPopup();
+
+          // fases
+          if (status == 0) {
+            if (
+              pointInPolygon(
+                [position.coords.latitude, position.coords.longitude],
+                inicio
+              )
+            ) {
+              status = 1;
+              utterance.text = "En posicion de inicio.";
+              speak();
+            }
+          } else if (status == 1) {
+            if (
+              linesIntersect(
+                [
+                  last_coord,
+                  [position.coords.latitude, position.coords.longitude],
+                ],
+                salida
+              )
+            ) {
+              status = 2;
+              utterance.text = "Iniciando carrera.";
+              speak();
+            }
+          } else if (status == 2) {
+            if (
+              linesIntersect(
+                [
+                  last_coord,
+                  [position.coords.latitude, position.coords.longitude],
+                ],
+                paso0
+              )
+            ) {
+              status = 3;
+              utterance.text = "Primer cuarto.";
+              speak();
+            }
+          } else if (status == 3) {
+            if (
+              linesIntersect(
+                [
+                  last_coord,
+                  [position.coords.latitude, position.coords.longitude],
+                ],
+                paso1
+              )
+            ) {
+              status = 4;
+              utterance.text = "Segundo cuarto.";
+              speak();
+            }
+          } else if (status == 4) {
+            if (
+              linesIntersect(
+                [
+                  last_coord,
+                  [position.coords.latitude, position.coords.longitude],
+                ],
+                paso2
+              )
+            ) {
+              status = 5;
+              utterance.text = "Tercer cuarto.";
+              speak();
+            }
+          } else if (status == 5) {
+            if (
+              linesIntersect(
+                [
+                  last_coord,
+                  [position.coords.latitude, position.coords.longitude],
+                ],
+                salida
+              )
+            ) {
+              status = 2;
+              utterance.text = "Vuelta " + vueta_text[vuelta] + " completada.";
+              speak();
+              vuelta++;
+            }
+          }
+
+          document.getElementById("demo").innerHTML =
+            "Latitud: " +
+            position.coords.latitude +
+            "<br>Longitud: " +
+            position.coords.longitude +
+            "<br>Exactitud: " +
+            parseInt(position.coords.accuracy) +
+            " metros." +
+            "<br>Altitud: " +
+            (position.coords.altitude
+              ? parseInt(position.coords.altitude)
+              : 0) +
+            " metros." +
+            "<br>Velocidad: " +
+            (position.coords.speed
+              ? convertirVelocidad(position.coords.speed)
+              : 0) +
+            "<br>Rumbo: " +
+            (position.coords.heading ? parseInt(position.coords.heading) : 0) +
+            " grados." +
+            "<br>Fecha y hora: " +
+            new Date(position.timestamp).toLocaleString() +
+            "<br>Estado: " +
+            (status == 0
+              ? "Esperando inicio"
+              : status == 1
+              ? "Esperando salida"
+              : status == 2
+              ? "En carrera"
+              : status == 3
+              ? "Primer cuarto"
+              : status == 4
+              ? "Segundo cuarto"
+              : status == 5
+              ? "Tercer cuarto"
+              : "Desconocido") +
+            "<br>Vuelta: " +
+            vueta_text[vuelta];
+
+          last_coord = [position.coords.latitude, position.coords.longitude];
         } catch (e) {
           console.log(e);
         }
       }
       getLocation();
-    </script>
-    <script>
+
       var map = L.map("mapid").setView([40.7128, -74.006], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -94,17 +239,16 @@
       marker
         .bindPopup("<b>Ubicación específica</b><br>40.7128, -74.0060")
         .openPopup();
-    </script>
-    <script>
+
       var synthesis = window.speechSynthesis;
       var utterance = new SpeechSynthesisUtterance();
       utterance.lang = "es-ES";
-      utterance.text = "Primera vuelta completada.";
+      utterance.text = "Iniciando ruta.";
       function speak() {
         synthesis.speak(utterance);
+        status = 0;
       }
-    </script>
-    <script>
+
       function convertirVelocidad(metrosPorSegundo) {
         const kilometrosPorHora = metrosPorSegundo * 3.6;
         const minutosPorKilometro = Math.floor(60 / kilometrosPorHora);
@@ -112,6 +256,51 @@
           (60 / kilometrosPorHora - minutosPorKilometro) * 60
         );
         return `${minutosPorKilometro} minutos y ${segundosPorKilometro} segundos por kilómetro`;
+      }
+
+      function pointInPolygon(point, polygon) {
+        var x = point[0],
+          y = point[1];
+        var inside = false;
+
+        for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+          var xi = polygon[i][0],
+            yi = polygon[i][1];
+          var xj = polygon[j][0],
+            yj = polygon[j][1];
+
+          var intersect =
+            yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+          if (intersect) inside = !inside;
+        }
+
+        return inside;
+      }
+      function linesIntersect(line1, line2) {
+        var x1 = line1[0][0],
+          y1 = line1[0][1];
+        var x2 = line1[1][0],
+          y2 = line1[1][1];
+        var x3 = line2[0][0],
+          y3 = line2[0][1];
+        var x4 = line2[1][0],
+          y4 = line2[1][1];
+
+        var det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+        if (det === 0) {
+          return false;
+        } else {
+          var t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / det;
+          var u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / det;
+
+          if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       }
     </script>
   </body>
