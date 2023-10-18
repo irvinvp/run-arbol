@@ -20,11 +20,10 @@
   <body>
     <p id="demo"></p>
     <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
-    <button onclick="send_simultation()" id="sim_b" disabled="false">
+    <button onclick="send_simultation()" id="sim_b">
       Iniciar simulacion
     </button>
     <div id="mapid"></div>
-    <textarea id="errorLog" rows="10" cols="50"></textarea>
     <script>
       try {
         navigator.wakeLock.request("screen");
@@ -33,24 +32,6 @@
       }
     </script>
     <script>
-      window.onerror = function (message, source, lineno, colno, error) {
-        var errorLog = document.getElementById("errorLog");
-        var errorMessage =
-          "Error: " +
-          message +
-          "\n" +
-          "Source: " +
-          source +
-          "\n" +
-          "Line: " +
-          lineno +
-          "\n" +
-          "Column: " +
-          colno +
-          "\n\n";
-        errorLog.value += errorMessage;
-        return true;
-      };
       // status 0 inicial, 1 primera vuelta, 2 segunda vuelta
       let simulation = [
         [19.264699378148247, -99.63149509792696],
