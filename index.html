@@ -25,6 +25,9 @@
     </button>
     <div id="mapid"></div>
     <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+      }
       try {
         navigator.wakeLock.request("screen");
       } catch (e) {
