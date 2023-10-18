@@ -20,9 +20,7 @@
   <body>
     <p id="demo"></p>
     <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
-    <button onclick="send_simultation()" id="sim_b">
-      Iniciar simulacion
-    </button>
+    <button onclick="send_simultation()" id="sim_b">Iniciar simulacion</button>
     <div id="mapid"></div>
     <script>
       try {
@@ -102,7 +100,7 @@
       ];
       let status = -1;
       let vuelta = 0;
-      let times = [];
+      let times = 0;
       let vueta_text = [
         "primera",
         "segunda",
@@ -162,6 +160,7 @@
               status = 1;
               utterance.text = "En posicion de inicio.";
               speak();
+              window.navigator.vibrate(1000);
             }
           } else if (status == 1) {
             if (
@@ -175,8 +174,9 @@
             ) {
               status = 2;
               utterance.text = "Iniciando carrera.";
-              times.push(Date.now());
+              times = Date.now();
               speak();
+              window.navigator.vibrate(1000);
             }
           } else if (status == 2) {
             if (
@@ -192,6 +192,7 @@
               utterance.text =
                 "Primer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
+              window.navigator.vibrate(1000);
             }
           } else if (status == 3) {
             if (
@@ -207,6 +208,7 @@
               utterance.text =
                 "Llegando a la mitad." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
+              window.navigator.vibrate(1000);
             }
           } else if (status == 4) {
             if (
@@ -222,6 +224,7 @@
               utterance.text =
                 "Tercer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
+              window.navigator.vibrate(1000);
             }
           } else if (status == 5) {
             if (
@@ -239,11 +242,12 @@
                 vueta_text[vuelta] +
                 " completada." +
                 "Tiempo total: " +
-                (Date.now() - times[vuelta]) / 1000 +
+                (Date.now() - times) / 1000 +
                 " segundos.";
               speak();
               vuelta++;
-              times.push(Date.now());
+              times = Date.now();
+              window.navigator.vibrate(1000);
             }
           }
 
