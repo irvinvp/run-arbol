@@ -242,7 +242,7 @@
                 vueta_text[vuelta] +
                 " completada." +
                 "Tiempo total: " +
-                (Date.now() - times) / 1000 +
+                parseInt((Date.now() - times) / 1000) +
                 " segundos.";
               speak();
               vuelta++;
