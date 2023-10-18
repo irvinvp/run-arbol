@@ -19,8 +19,10 @@
   </head>
   <body>
     <p id="demo"></p>
-    <button onclick="iniciar()">Iniciar recorrido</button>
-    <button onclick="send_simultation()">Iniciar simulacion</button>
+    <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
+    <button onclick="send_simultation()" id="sim_b" disabled="true">
+      Iniciar simulacion
+    </button>
     <div id="mapid"></div>
     <textarea id="errorLog" rows="10" cols="50"></textarea>
     <script>
@@ -398,6 +400,7 @@
         }
       }
       function iniciar() {
+        document.getElementById("iniciar_b").disabled = false;
         status = 0;
         vuelta = 0;
         utterance.text = "Iniciando ruta.";
