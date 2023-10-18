@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat de Texto</title>
+  </head>
+  <body>
+    <input type="text" id="messageInput" placeholder="Escribe un mensaje" />
+    <button id="sendButton">Enviar</button>
+    <div id="chatLog"></div>
+
+    <script>
+      const chatLog = document.getElementById("chatLog");
+      const messageInput = document.getElementById("messageInput");
+      const sendButton = document.getElementById("sendButton");
+
+      let localConnection;
+      let dataChannel;
+
+      localConnection = new RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "stun:stun.relay.metered.ca:80",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:80",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:80?transport=tcp",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:443",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:443?transport=tcp",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+        ],
+      });
+
+      dataChannel = localConnection.createDataChannel("chat");
+
+      dataChannel.onopen = () => {
+        console.log("datachannel open");
+      };
+
+      dataChannel.onmessage = (event) => {
+        const message = event.data;
+        displayMessage(message);
+      };
+
+      sendButton.addEventListener("click", () => {
+        const message = messageInput.value;
+        sendMessage(message);
+        messageInput.value = "";
+      });
+
+      function sendMessage(message) {
+        dataChannel.send(message);
+        displayMessage(`Me: ${message}`);
+      }
+
+      function displayMessage(message) {
+        const messageElement = document.createElement("p");
+        messageElement.textContent = message;
+        chatLog.appendChild(messageElement);
+      }
+    </script>
+  </body>
+</html>
