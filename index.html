@@ -20,7 +20,7 @@
   <body>
     <p id="demo"></p>
     <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
-    <button onclick="send_simultation()" id="sim_b" disabled="true">
+    <button onclick="send_simultation()" id="sim_b" disabled="false">
       Iniciar simulacion
     </button>
     <div id="mapid"></div>
@@ -121,6 +121,7 @@
       ];
       let status = -1;
       let vuelta = 0;
+      let times = [];
       let vueta_text = [
         "primera",
         "segunda",
@@ -193,6 +194,7 @@
             ) {
               status = 2;
               utterance.text = "Iniciando carrera.";
+              times.push(Date.now());
               speak();
             }
           } else if (status == 2) {
@@ -222,7 +224,7 @@
             ) {
               status = 4;
               utterance.text =
-                "Segundo cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
+                "Llegando a la mitad." + "Vuelta " + vueta_text[vuelta] + ".";
               speak();
             }
           } else if (status == 4) {
@@ -251,9 +253,16 @@
               )
             ) {
               status = 2;
-              utterance.text = "Vuelta " + vueta_text[vuelta] + " completada.";
+              utterance.text =
+                "Vuelta " +
+                vueta_text[vuelta] +
+                " completada." +
+                "Tiempo total: " +
+                (Date.now() - times[vuelta]) / 1000 +
+                " segundos.";
               speak();
               vuelta++;
+              times.push(Date.now());
             }
           }
 
