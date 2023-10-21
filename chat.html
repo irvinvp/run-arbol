@@ -13,6 +13,20 @@
     videoElement.srcObject = event.streams[0];
   };
 
+  peerConnection.createDataChannel("chat");
+
+  peerConnection.addEventListener("datachannel", (event) => {
+    const dataChannel = event.channel;
+
+    dataChannel.addEventListener("open", () => {
+      dataChannel.send("Hello World!");
+    });
+
+    dataChannel.addEventListener("message", (event) => {
+      console.log("Message from datachannel:", event.data);
+    });
+  });
+
   // Evento que se dispara cuando la conexión ICE está lista para ser utilizada
   peerConnection.oniceconnectionstatechange = (event) => {
     if (peerConnection.iceConnectionState === "connected") {
