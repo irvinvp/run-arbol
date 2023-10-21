@@ -1,7 +1,35 @@
 <script>
   // Configuración de WebRTC
   const configuration = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    iceServers: [
+      {
+        iceServers: [
+          {
+            urls: "stun:stun.relay.metered.ca:80",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:80",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:80?transport=tcp",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:443",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+          {
+            urls: "turn:a.relay.metered.ca:443?transport=tcp",
+            username: "ccb803a53ccc0887680ef973",
+            credential: "4eR9jWY5e1d2G7F4",
+          },
+        ],
+      },
+    ],
   };
 
   // Crear una nueva conexión RTCPeerConnection
