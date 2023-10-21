@@ -84,6 +84,13 @@
     });
   };
 
+  peerConnection.addEventListener("icecandidate", (event) => {
+    if (event.candidate) {
+      // Enviar el candidato ICE local al servidor a través del canal WebSocket
+      socket.send(JSON.stringify(event.candidate));
+    }
+  });
+
   // Evento que se dispara cuando se cierra la conexión WebSocket
   socket.onclose = () => {
     console.log("WebSocket conexión cerrada");
