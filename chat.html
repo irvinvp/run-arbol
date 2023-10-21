@@ -1,76 +1,77 @@
-// Configuración de WebRTC
-const configuration = {
-  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-};
+<script>
+  // Configuración de WebRTC
+  const configuration = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  };
 
-// Crear una nueva conexión RTCPeerConnection
-const peerConnection = new RTCPeerConnection(configuration);
+  // Crear una nueva conexión RTCPeerConnection
+  const peerConnection = new RTCPeerConnection(configuration);
 
-// Evento que se dispara cuando se recibe una nueva pista de medios remota
-peerConnection.ontrack = (event) => {
-  const videoElement = document.getElementById("remote-video");
-  videoElement.srcObject = event.streams[0];
-};
+  // Evento que se dispara cuando se recibe una nueva pista de medios remota
+  peerConnection.ontrack = (event) => {
+    const videoElement = document.getElementById("remote-video");
+    videoElement.srcObject = event.streams[0];
+  };
 
-
-// Evento que se dispara cuando la conexión ICE está lista para ser utilizada
-peerConnection.oniceconnectionstatechange = (event) => {
-  if (peerConnection.iceConnectionState === "connected") {
-    console.log("WebRTC conexión establecida");
-  }
-};
-
-// Establecer el canal de WebSocket para la señalización
-const socket = new WebSocket(
-  "wss://socketsbay.com/wss/v2/1/9862444c3c85c37fd9bbc7122caafd39/"
-);
-
-// Evento que se dispara cuando se abre la conexión WebSocket
-socket.onopen = () => {
-  console.log("WebSocket conexión establecida");
-
-  // Evento que se dispara cuando se recibe un mensaje en el canal WebSocket
-  socket.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-
-    if (message.type === "offer") {
-      // Se recibe una oferta de conexión remota
-
-      // Establecer la descripción remota en la conexión RTCPeerConnection
-      peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-
-      // Crear una respuesta a la oferta recibida
-      peerConnection.createAnswer().then((answer) => {
-        // Establecer la descripción local en la conexión RTCPeerConnection
-        peerConnection.setLocalDescription(answer);
-
-        // Enviar la respuesta al servidor a través del canal WebSocket
-        socket.send(JSON.stringify(answer));
-      });
-    } else if (message.type === "answer") {
-      // Se recibe una respuesta a la oferta enviada
-
-      // Establecer la descripción remota en la conexión RTCPeerConnection
-      peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-    } else if (message.type === "candidate") {
-      // Se recibe un candidato ICE remoto
-
-      // Agregar el candidato a la conexión RTCPeerConnection
-      peerConnection.addIceCandidate(new RTCIceCandidate(message));
+  // Evento que se dispara cuando la conexión ICE está lista para ser utilizada
+  peerConnection.oniceconnectionstatechange = (event) => {
+    if (peerConnection.iceConnectionState === "connected") {
+      console.log("WebRTC conexión establecida");
     }
   };
 
-  // Crear una oferta de conexión local
-  peerConnection.createOffer().then((offer) => {
-    // Establecer la descripción local en la conexión RTCPeerConnection
-    peerConnection.setLocalDescription(offer);
+  // Establecer el canal de WebSocket para la señalización
+  const socket = new WebSocket(
+    "wss://socketsbay.com/wss/v2/1/9862444c3c85c37fd9bbc7122caafd39/"
+  );
 
-    // Enviar la oferta al servidor a través del canal WebSocket
-    socket.send(JSON.stringify(offer));
-  });
-};
+  // Evento que se dispara cuando se abre la conexión WebSocket
+  socket.onopen = () => {
+    console.log("WebSocket conexión establecida");
 
-// Evento que se dispara cuando se cierra la conexión WebSocket
-socket.onclose = () => {
-  console.log("WebSocket conexión cerrada");
-};
+    // Evento que se dispara cuando se recibe un mensaje en el canal WebSocket
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      if (message.type === "offer") {
+        // Se recibe una oferta de conexión remota
+
+        // Establecer la descripción remota en la conexión RTCPeerConnection
+        peerConnection.setRemoteDescription(new RTCSessionDescription(message));
+
+        // Crear una respuesta a la oferta recibida
+        peerConnection.createAnswer().then((answer) => {
+          // Establecer la descripción local en la conexión RTCPeerConnection
+          peerConnection.setLocalDescription(answer);
+
+          // Enviar la respuesta al servidor a través del canal WebSocket
+          socket.send(JSON.stringify(answer));
+        });
+      } else if (message.type === "answer") {
+        // Se recibe una respuesta a la oferta enviada
+
+        // Establecer la descripción remota en la conexión RTCPeerConnection
+        peerConnection.setRemoteDescription(new RTCSessionDescription(message));
+      } else if (message.type === "candidate") {
+        // Se recibe un candidato ICE remoto
+
+        // Agregar el candidato a la conexión RTCPeerConnection
+        peerConnection.addIceCandidate(new RTCIceCandidate(message));
+      }
+    };
+
+    // Crear una oferta de conexión local
+    peerConnection.createOffer().then((offer) => {
+      // Establecer la descripción local en la conexión RTCPeerConnection
+      peerConnection.setLocalDescription(offer);
+
+      // Enviar la oferta al servidor a través del canal WebSocket
+      socket.send(JSON.stringify(offer));
+    });
+  };
+
+  // Evento que se dispara cuando se cierra la conexión WebSocket
+  socket.onclose = () => {
+    console.log("WebSocket conexión cerrada");
+  };
+</script>
