@@ -35,9 +35,10 @@
   };
 
   peerConnection.createDataChannel("chat");
+  let dataChannel;
 
   peerConnection.addEventListener("datachannel", (event) => {
-    const dataChannel = event.channel;
+    dataChannel = event.channel;
 
     dataChannel.addEventListener("open", () => {
       console.log("DataChannel abierta");
