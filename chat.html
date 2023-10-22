@@ -87,7 +87,7 @@
 
   peerConnection.addEventListener("icecandidate", (event) => {
     if (event.candidate) {
-      socket.send(JSON.stringify(event));
+      socket.send(JSON.stringify(event.candidate));
     }
   });
 
