@@ -58,10 +58,14 @@
     }
   };
 
+  peerConnection.addEventListener("connectionstatechange", (event) => {
+    if (peerConnection.connectionState === "connected") {
+      console.log("Peers WebRTC conexión establecida");
+    }
+  });
+
   // Establecer el canal de WebSocket para la señalización
-  const socket = new WebSocket(
-    "wss://socketsbay.com/wss/v2/1/9862444c3c85c37fd9bbc7122caafd39/"
-  );
+  const socket = new WebSocket("wss://ws-gw.omnitracs.online");
 
   // Evento que se dispara cuando se abre la conexión WebSocket
   socket.onopen = () => {
