@@ -75,8 +75,8 @@
       } else if (message.type === "answer") {
         console.log("Answer from remote peer");
         peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-      } else if (message.type === "candidate") {
-        console.log("Answer from remote peer");
+      } else if (message.candidate) {
+        console.log("candidate from remote peer");
         peerConnection.addIceCandidate(message);
       }
     };
