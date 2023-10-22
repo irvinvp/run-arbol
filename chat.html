@@ -40,6 +40,7 @@
     const dataChannel = event.channel;
 
     dataChannel.addEventListener("open", () => {
+      console.log("DataChannel abierta");
       dataChannel.send("Hello World!");
     });
 
