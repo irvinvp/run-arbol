@@ -1,7 +1,6 @@
 <input type="text" id="message" />
 <button id="send" disabled>Send</button>
 <textarea id="list_messages" disabled></textarea>
-<video id="remote-video" autoplay></video>
 
 <script>
   const message_input = document.getElementById("message");
@@ -38,11 +37,6 @@
 
   const peerConnection = new RTCPeerConnection(configuration);
 
-  peerConnection.ontrack = (event) => {
-    const videoElement = document.getElementById("remote-video");
-    videoElement.srcObject = event.streams[0];
-  };
-
   let dataChannel = peerConnection.createDataChannel("chat");
 
   peerConnection.addEventListener("datachannel", (event) => {
@@ -57,12 +51,6 @@
       list_messages.value += event.data + "\n";
     });
   });
-
-  peerConnection.oniceconnectionstatechange = (event) => {
-    if (peerConnection.iceConnectionState === "connected") {
-      console.log("WebRTC conexión establecida");
-    }
-  };
 
   peerConnection.addEventListener("connectionstatechange", (event) => {
     if (peerConnection.connectionState === "connected") {
