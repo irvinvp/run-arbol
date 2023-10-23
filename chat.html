@@ -37,7 +37,7 @@
 
   const peerConnection = new RTCPeerConnection(configuration);
 
-  let dataChannel = peerConnection.createDataChannel("chat");
+  //let dataChannel = peerConnection.createDataChannel("chat");
 
   peerConnection.addEventListener("datachannel", (event) => {
     console.log("Yo recibo la conexión");
