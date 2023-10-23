@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
+    <div>
+      <p id="status">Offline</p>
+    </div>
     <div style="margin-bottom: 10px">
       <input type="text" id="message" />
       <button id="send" disabled>Send</button>
@@ -21,6 +24,7 @@
       const message_input = document.getElementById("message");
       const send_button = document.getElementById("send");
       const list_messages = document.getElementById("list_messages");
+      const status = document.getElementById("status");
 
       const configuration = {
         iceServers: [
@@ -97,8 +101,14 @@
       peerConnection.addEventListener("connectionstatechange", (event) => {
         if (peerConnection.connectionState === "connected") {
           console.log("Peers WebRTC conexión establecida");
+          status.innerText = "Online";
+        }
+        if (peerConnection.connectionState === "disconnected") {
+          console.log("Peers WebRTC conexión cerrada");
+          status.innerText = "Offline";
         }
       });
+      
 
       const socket = new WebSocket("wss://ws-gw.omnitracs.online");
 
