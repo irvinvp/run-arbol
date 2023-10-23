@@ -1,6 +1,13 @@
-<input type="text" id="message" />
-<button id="send" disabled>Send</button>
-<textarea id="list_messages" disabled></textarea>
+<div style="margin-bottom: 10px">
+  <input type="text" id="message" />
+  <button id="send" disabled>Send</button>
+</div>
+
+<textarea
+  id="list_messages"
+  disabled
+  style="width: 100%; height: 200px"
+></textarea>
 
 <script>
   const message_input = document.getElementById("message");
@@ -43,10 +50,12 @@
     send_button.disabled = false;
   });
   dataChannel.addEventListener("message", (event) => {
-    list_messages.value += event.data + "\n";
+    list_messages.value += "Other: " + event.data + "\n";
   });
   send_button.addEventListener("click", () => {
     dataChannel.send(message_input.value);
+    list_messages.value += "Me: " + event.data + "\n";
+    message_input.value = "";
   });
 
   peerConnection.addEventListener("datachannel", (event) => {
@@ -56,7 +65,7 @@
       send_button.disabled = false;
     });
     dataChannel.addEventListener("message", (event) => {
-      list_messages.value += event.data + "\n";
+      list_messages.value += "Other: " + event.data + "\n";
     });
   });
 
