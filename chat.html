@@ -7,8 +7,8 @@
   </head>
   <body>
     <div>
-      <p id="status">Offline</p>
-      <p id="data_status">Channel disconnected</p>
+      <p id="status">Status: Offline</p>
+      <p id="data_status">Channel: disconnected</p>
     </div>
     <div style="margin-bottom: 10px">
       <input type="text" id="message" />
@@ -62,7 +62,7 @@
       let dataChannel = peerConnection.createDataChannel(chat_name());
       dataChannel.addEventListener("open", () => {
         send_button.disabled = false;
-        data_status.innerText = "Channel connected";
+        data_status.innerText = "Channel: connected";
       });
       dataChannel.addEventListener("message", (event) => {
         list_messages.value =
@@ -83,7 +83,7 @@
       });
       dataChannel.addEventListener("close", () => {
         send_button.disabled = true;
-        data_status.innerText = "Channel disconnected";
+        data_status.innerText = "Channel: disconnected";
       });
 
       peerConnection.addEventListener("datachannel", (event) => {
@@ -91,7 +91,7 @@
         console.log("DataChannel", dataChannel);
         dataChannel.addEventListener("open", () => {
           send_button.disabled = false;
-          data_status.innerText = "Channel connected";
+          data_status.innerText = "Channel: connected";
         });
         dataChannel.addEventListener("message", (event) => {
           list_messages.value =
@@ -100,7 +100,7 @@
         });
         dataChannel.addEventListener("close", () => {
           send_button.disabled = true;
-          data_status.innerText = "Channel disconnected";
+          data_status.innerText = "Channel: disconnected";
         });
       });
 
@@ -108,13 +108,15 @@
         if (peerConnection.connectionState === "connected") {
           console.log("Peers WebRTC conexión establecida");
           status.innerText = "Status: Online";
+          let pair =
+            peerConnection.sctp.transport.iceTransport.getSelectedCandidatePair();
+          console.log(pair.remote.type);
         }
         if (peerConnection.connectionState === "disconnected") {
           console.log("Peers WebRTC conexión cerrada");
           status.innerText = "Status: Offline";
         }
       });
-      
 
       const socket = new WebSocket("wss://ws-gw.omnitracs.online");
 
