@@ -37,14 +37,24 @@
 
   const peerConnection = new RTCPeerConnection(configuration);
 
+  // Chat
+  let dataChannel = peerConnection.createDataChannel(chat_name());
+  dataChannel.addEventListener("open", () => {
+    send_button.disabled = false;
+  });
+  dataChannel.addEventListener("message", (event) => {
+    //list_messages.value += event.data + "\n";
+  });
+  send_button.addEventListener("click", () => {
+    dataChannel.send(message_input.value);
+  });
+
   peerConnection.addEventListener("datachannel", (event) => {
-    console.log("Yo recibo la conexión");
     let dataChannel = event.channel;
-
+    console.log("DataChannel", dataChannel);
     dataChannel.addEventListener("open", () => {
-      send_button.disabled = false;
+      //send_button.disabled = false;
     });
-
     dataChannel.addEventListener("message", (event) => {
       list_messages.value += event.data + "\n";
     });
@@ -69,28 +79,14 @@
           socket.send(JSON.stringify(answer));
         });
       } else if (message.type === "answer") {
-        console.log("Yo creo la conexión");
         peerConnection.setRemoteDescription(new RTCSessionDescription(message));
       } else if (message.candidate) {
-        console.log("candidate from remote peer");
         peerConnection.addIceCandidate(message);
       }
     };
     peerConnection.createOffer().then((offer) => {
       peerConnection.setLocalDescription(offer);
       socket.send(JSON.stringify(offer));
-
-      // Chat
-      let dataChannel = peerConnection.createDataChannel("chat");
-      dataChannel.addEventListener("open", () => {
-        send_button.disabled = false;
-      });
-      dataChannel.addEventListener("message", (event) => {
-        list_messages.value += event.data + "\n";
-      });
-      send_button.addEventListener("click", () => {
-        dataChannel.send(message_input.value);
-      });
     });
     setInterval(() => {
       socket.send(JSON.stringify({ type: "ping" }));
@@ -106,4 +102,14 @@
   socket.onclose = () => {
     console.log("WebSocket conexión cerrada");
   };
+
+  function chat_name() {
+    const caracteres =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let nombre = "";
+    for (let i = 0; i < 5; i++) {
+      nombre += caracteres[Math.floor(Math.random() * caracteres.length)];
+    }
+    return nombre;
+  }
 </script>
