@@ -43,6 +43,8 @@
     videoElement.srcObject = event.streams[0];
   };
 
+  let dataChannel = peerConnection.createDataChannel("chat");
+
   peerConnection.addEventListener("datachannel", (event) => {
     console.log("Yo recibo la conexión");
     let dataChannel = event.channel;
@@ -55,6 +57,12 @@
       list_messages.value += event.data + "\n";
     });
   });
+
+  peerConnection.oniceconnectionstatechange = (event) => {
+    if (peerConnection.iceConnectionState === "connected") {
+      console.log("WebRTC conexión establecida");
+    }
+  };
 
   peerConnection.addEventListener("connectionstatechange", (event) => {
     if (peerConnection.connectionState === "connected") {
