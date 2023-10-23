@@ -62,7 +62,7 @@
       let dataChannel = peerConnection.createDataChannel(chat_name());
       dataChannel.addEventListener("open", () => {
         send_button.disabled = false;
-        data_status.innerText = "Channel: connected";
+        data_status.innerText = "Channel: Connected";
       });
       dataChannel.addEventListener("message", (event) => {
         list_messages.value =
@@ -95,7 +95,7 @@
         console.log("DataChannel", dataChannel);
         dataChannel.addEventListener("open", () => {
           send_button.disabled = false;
-          data_status.innerText = "Channel: connected";
+          data_status.innerText = "Channel: Connected";
         });
         dataChannel.addEventListener("message", (event) => {
           list_messages.value =
