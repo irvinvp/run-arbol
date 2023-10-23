@@ -67,6 +67,10 @@
       dataChannel.addEventListener("message", (event) => {
         list_messages.value =
           "Peer: " + event.data + "\n" + list_messages.value;
+        list_messages.scrollTop = 0;
+        if (event.data === "ping") {
+          dataChannel.send("pong");
+        }
       });
       send_button.addEventListener("click", () => {
         dataChannel.send(message_input.value);
@@ -97,6 +101,9 @@
           list_messages.value =
             "Peer: " + event.data + "\n" + list_messages.value;
           list_messages.scrollTop = 0;
+          if (event.data === "ping") {
+            dataChannel.send("pong");
+          }
         });
         dataChannel.addEventListener("close", () => {
           send_button.disabled = true;
@@ -108,13 +115,11 @@
         if (peerConnection.connectionState === "connected") {
           console.log("Peers WebRTC conexión establecida");
           status.innerText = "Status: Online";
-          let pair =
-            peerConnection.sctp.transport.iceTransport.getSelectedCandidatePair();
-          console.log(pair.remote.type);
         }
         if (peerConnection.connectionState === "disconnected") {
           console.log("Peers WebRTC conexión cerrada");
           status.innerText = "Status: Offline";
+          send_button.disabled = true;
         }
       });
 
