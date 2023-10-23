@@ -57,7 +57,7 @@
     list_messages.value =
       "Me: " + message_input.value + "\n" + list_messages.value;
     message_input.value = "";
-    list_messages.scrollTop = list_messages.scrollHeight;
+    list_messages.scrollTop = 0;
   });
   message_input.addEventListener("keyup", (event) => {
     if (event.keyCode === 13) {
@@ -74,7 +74,7 @@
     });
     dataChannel.addEventListener("message", (event) => {
       list_messages.value = "Peer: " + event.data + "\n" + list_messages.value;
-      list_messages.scrollTop = list_messages.scrollHeight;
+      list_messages.scrollTop = 0;
     });
   });
 
