@@ -8,7 +8,7 @@
   <body>
     <div>
       <p id="status">Status: Offline</p>
-      <p id="data_status">Channel: disconnected</p>
+      <p id="data_status">Channel: Disconnected</p>
     </div>
     <div style="margin-bottom: 10px">
       <input type="text" id="message" />
@@ -87,7 +87,7 @@
       });
       dataChannel.addEventListener("close", () => {
         send_button.disabled = true;
-        data_status.innerText = "Channel: disconnected";
+        data_status.innerText = "Channel: Disconnected";
       });
 
       peerConnection.addEventListener("datachannel", (event) => {
@@ -107,7 +107,7 @@
         });
         dataChannel.addEventListener("close", () => {
           send_button.disabled = true;
-          data_status.innerText = "Channel: disconnected";
+          data_status.innerText = "Channel: Disconnected";
         });
       });
 
@@ -118,7 +118,7 @@
         }
         if (peerConnection.connectionState === "disconnected") {
           console.log("Peers WebRTC conexión cerrada");
-          data_status.innerText = "Channel: disconnected";
+          data_status.innerText = "Channel: Disconnected";
           status.innerText = "Status: Offline";
           send_button.disabled = true;
         }
