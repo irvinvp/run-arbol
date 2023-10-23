@@ -75,7 +75,6 @@
         peerConnection.setRemoteDescription(new RTCSessionDescription(message));
 
         // Chat
-        /*
         let dataChannel = peerConnection.createDataChannel("chat");
         dataChannel.addEventListener("open", () => {
           send_button.disabled = false;
@@ -85,7 +84,7 @@
         });
         send_button.addEventListener("click", () => {
           dataChannel.send(message_input.value);
-        });*/
+        });
       } else if (message.candidate) {
         console.log("candidate from remote peer");
         peerConnection.addIceCandidate(message);
