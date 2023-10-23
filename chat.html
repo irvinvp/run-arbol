@@ -116,6 +116,9 @@
           send_button.click();
         }
       });
+      dataChannel.addEventListener("close", () => {
+        send_button.disabled = true;
+      });
 
       peerConnection.addEventListener("datachannel", (event) => {
         dataChannel = event.channel;
@@ -127,6 +130,9 @@
           list_messages.value =
             "Peer: " + event.data + "\n" + list_messages.value;
           list_messages.scrollTop = 0;
+        });
+        dataChannel.addEventListener("close", () => {
+          send_button.disabled = true;
         });
       });
 
