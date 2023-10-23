@@ -50,11 +50,11 @@
     send_button.disabled = false;
   });
   dataChannel.addEventListener("message", (event) => {
-    list_messages.value += "Other: " + event.data + "\n";
+    list_messages.value += "Peer: " + event.data + "\n";
   });
   send_button.addEventListener("click", () => {
     dataChannel.send(message_input.value);
-    list_messages.value += "Me: " + event.data + "\n";
+    list_messages.value += "Me: " + message_input.value + "\n";
     message_input.value = "";
   });
 
@@ -65,7 +65,7 @@
       send_button.disabled = false;
     });
     dataChannel.addEventListener("message", (event) => {
-      list_messages.value += "Other: " + event.data + "\n";
+      list_messages.value += "Peer: " + event.data + "\n";
     });
   });
 
