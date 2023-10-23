@@ -1,4 +1,13 @@
+<input type="text" id="message" />
+<button id="send" disabled>Send</button>
+<textarea id="list_messages" disabled></textarea>
+<video id="remote-video" autoplay></video>
+
 <script>
+  const message_input = document.getElementById("message");
+  const send_button = document.getElementById("send");
+  const list_messages = document.getElementById("list_messages");
+
   const configuration = {
     iceServers: [
       {
@@ -34,27 +43,18 @@
     videoElement.srcObject = event.streams[0];
   };
 
-  peerConnection.createDataChannel("chat");
-  let dataChannel;
-
   peerConnection.addEventListener("datachannel", (event) => {
-    dataChannel = event.channel;
+    console.log("Yo recibo la conexión");
+    let dataChannel = event.channel;
 
     dataChannel.addEventListener("open", () => {
-      console.log("DataChannel abierta");
-      dataChannel.send("Hello World!");
+      send_button.disabled = false;
     });
 
     dataChannel.addEventListener("message", (event) => {
-      console.log("Message from datachannel:", event.data);
+      list_messages.value += event.data + "\n";
     });
   });
-
-  peerConnection.oniceconnectionstatechange = (event) => {
-    if (peerConnection.iceConnectionState === "connected") {
-      console.log("WebRTC conexión establecida");
-    }
-  };
 
   peerConnection.addEventListener("connectionstatechange", (event) => {
     if (peerConnection.connectionState === "connected") {
@@ -75,8 +75,20 @@
           socket.send(JSON.stringify(answer));
         });
       } else if (message.type === "answer") {
-        console.log("Answer from remote peer");
+        console.log("Yo creo la conexión");
         peerConnection.setRemoteDescription(new RTCSessionDescription(message));
+
+        // Chat
+        let dataChannel = peerConnection.createDataChannel("chat");
+        dataChannel.addEventListener("open", () => {
+          send_button.disabled = false;
+        });
+        dataChannel.addEventListener("message", (event) => {
+          list_messages.value += event.data + "\n";
+        });
+        send_button.addEventListener("click", () => {
+          dataChannel.send(message_input.value);
+        });
       } else if (message.candidate) {
         console.log("candidate from remote peer");
         peerConnection.addIceCandidate(message);
