@@ -57,6 +57,12 @@
     list_messages.value += "Me: " + message_input.value + "\n";
     message_input.value = "";
   });
+  message_input.addEventListener("keyup", (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      send_button.click();
+    }
+  });
 
   peerConnection.addEventListener("datachannel", (event) => {
     dataChannel = event.channel;
