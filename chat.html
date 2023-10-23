@@ -118,8 +118,8 @@
         }
         if (peerConnection.connectionState === "disconnected") {
           console.log("Peers WebRTC conexión cerrada");
-          status.innerText = "Status: Offline";
           data_status.innerText = "Channel: disconnected";
+          status.innerText = "Status: Offline";
           send_button.disabled = true;
         }
       });
