@@ -37,8 +37,6 @@
 
   const peerConnection = new RTCPeerConnection(configuration);
 
-  //let dataChannel = peerConnection.createDataChannel("chat");
-
   peerConnection.addEventListener("datachannel", (event) => {
     console.log("Yo recibo la conexión");
     let dataChannel = event.channel;
@@ -73,18 +71,6 @@
       } else if (message.type === "answer") {
         console.log("Yo creo la conexión");
         peerConnection.setRemoteDescription(new RTCSessionDescription(message));
-
-        // Chat
-        let dataChannel = peerConnection.createDataChannel("chat");
-        dataChannel.addEventListener("open", () => {
-          send_button.disabled = false;
-        });
-        dataChannel.addEventListener("message", (event) => {
-          list_messages.value += event.data + "\n";
-        });
-        send_button.addEventListener("click", () => {
-          dataChannel.send(message_input.value);
-        });
       } else if (message.candidate) {
         console.log("candidate from remote peer");
         peerConnection.addIceCandidate(message);
@@ -93,6 +79,18 @@
     peerConnection.createOffer().then((offer) => {
       peerConnection.setLocalDescription(offer);
       socket.send(JSON.stringify(offer));
+
+      // Chat
+      let dataChannel = peerConnection.createDataChannel("chat");
+      dataChannel.addEventListener("open", () => {
+        send_button.disabled = false;
+      });
+      dataChannel.addEventListener("message", (event) => {
+        list_messages.value += event.data + "\n";
+      });
+      send_button.addEventListener("click", () => {
+        dataChannel.send(message_input.value);
+      });
     });
     setInterval(() => {
       socket.send(JSON.stringify({ type: "ping" }));
