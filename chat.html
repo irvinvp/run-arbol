@@ -42,11 +42,11 @@
       let socket = new WebSocket("wss://ws-gw.omnitracs.online");
       socket.onopen = () => {
         console.log("WebSocket conexión establecida");
+        peers(me_name, socket, "join");
         socket.send(JSON.stringify({ type: "join", name: me_name }));
         socket.onmessage = (event) => {
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
-            if (!peers_list[message.name]) peers(message.name, socket, "none");
             if (message.type === "offer") {
               console.log("offer", message);
               peers_list[message.name].setRemoteDescription(
