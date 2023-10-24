@@ -167,6 +167,7 @@
 
         peerConnection.createOffer().then((offer) => {
           peerConnection.setLocalDescription(offer);
+          console.log(offer);
           socket.send(JSON.stringify({ ...offer, name: me_name }));
         });
 
