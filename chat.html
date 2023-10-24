@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
+    <div>User name: <span id="user_name"></span></div>
+
     <div style="margin-bottom: 10px">
       <input type="text" id="message" />
       <button id="send">Send</button>
@@ -25,6 +27,8 @@
       let message_input = document.getElementById("message");
       let send_button = document.getElementById("send");
       let list_messages = document.getElementById("list_messages");
+      let user_name = document.getElementById("user_name");
+      user_name.innerHTML = me_name;
 
       message_input.addEventListener("keyup", (event) => {
         if (event.keyCode === 13) {
