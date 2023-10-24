@@ -59,7 +59,7 @@
                 socket.send(
                   JSON.stringify({
                     ...answer,
-                    name: message.name,
+                    name: message.org_,
                     priv_: "answer",
                     org_: me_name,
                   })
