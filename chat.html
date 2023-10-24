@@ -32,6 +32,7 @@
       let me_name = chat_name();
 
       // WebSocket
+      let peers_list = {};
       let socket = new WebSocket("wss://ws-gw.omnitracs.online");
       socket.onopen = () => {
         console.log("WebSocket conexión establecida");
@@ -40,19 +41,19 @@
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
             if (message.type === "offer") {
-              peerConnection.setRemoteDescription(
+              peers_list[message.name].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
-              peerConnection.createAnswer().then((answer) => {
-                peerConnection.setLocalDescription(answer);
-                socket.send(JSON.stringify(answer));
+              peers_list[message.name].createAnswer().then((answer) => {
+                peers_list[message.name].setLocalDescription(answer);
+                socket.send(JSON.stringify({ ...answer, name: message.name }));
               });
             } else if (message.type === "answer") {
-              peerConnection.setRemoteDescription(
+              peers_list[message.name].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
             } else if (message.candidate) {
-              peerConnection.addIceCandidate(message);
+              peers_list[message.name].addIceCandidate(message);
             }
           } else if (message.type === "join") {
             list_messages.value =
@@ -61,7 +62,7 @@
               " se ha unido al chat\n" +
               list_messages.value;
             list_messages.scrollTop = 0;
-            peers(message.name, socket);
+            peers_list[message.name] = peers(message.name, socket);
           }
         };
         setInterval(() => {
@@ -72,7 +73,7 @@
         console.log("WebSocket conexión cerrada");
       };
 
-      async function peers(chat_name, socket) {
+      function peers(chat_name, socket) {
         let peerConnection = new RTCPeerConnection({
           iceServers: [
             {
@@ -182,6 +183,7 @@
             send_button.click();
           }
         });
+        return peerConnection;
       }
       function chat_name() {
         let caracteres =
