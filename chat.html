@@ -163,6 +163,11 @@
           }
           if (peerConnection.connectionState === "disconnected") {
             console.log("Peers WebRTC conexión cerrada", chat_name);
+            list_messages.value =
+              "Peer: " +
+              chat_name +
+              " se ha desconectado\n" +
+              list_messages.value;
           }
         });
         let dataChannel = peerConnection.createDataChannel(chat_name);
