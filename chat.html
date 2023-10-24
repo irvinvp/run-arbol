@@ -24,6 +24,7 @@
     <script>
       // Inputs
       let peers_list = {};
+      let data_list = {};
       let me_name = chat_name();
       let message_input = document.getElementById("message");
       let send_button = document.getElementById("send");
@@ -38,9 +39,9 @@
       });
 
       send_button.addEventListener("click", () => {
-        for (let x in peers_list) {
+        for (let x in data_list) {
           try {
-            peers_list[x].dataChannel.send(message_input.value);
+            data_list[x].send(message_input.value);
           } catch (e) {
             console.log(e);
           }
@@ -165,6 +166,7 @@
             send_button.disabled = true;
             data_status.innerText = "Channel: Disconnected";
           });
+          data_list[chat_name] = dataChannel;
         });
         peerConnection.addEventListener("connectionstatechange", (event) => {
           if (peerConnection.connectionState === "connected") {
@@ -200,6 +202,7 @@
           send_button.disabled = true;
           data_status.innerText = "Channel: Disconnected";
         });
+        data_list[chat_name] = dataChannel;
 
         if (type == "join") {
           peerConnection.createOffer().then((offer) => {
