@@ -23,6 +23,8 @@
 
     <script>
       // Inputs
+      let peers_list = {};
+      let me_name = chat_name();
       let message_input = document.getElementById("message");
       let send_button = document.getElementById("send");
       let list_messages = document.getElementById("list_messages");
@@ -35,10 +37,21 @@
         }
       });
 
-      let me_name = chat_name();
+      send_button.addEventListener("click", () => {
+        for (let x in peers_list) {
+          try {
+            peers_list[x].dataChannel.send(message_input.value);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        list_messages.value =
+          "Me: " + message_input.value + "\n" + list_messages.value;
+        message_input.value = "";
+        list_messages.scrollTop = 0;
+      });
 
       // WebSocket
-      let peers_list = {};
       let socket = new WebSocket("wss://ws-gw.omnitracs.online");
       socket.onopen = () => {
         console.log("WebSocket conexión establecida");
@@ -202,15 +215,6 @@
             );
           });
         }
-
-        send_button.addEventListener("click", () => {
-          dataChannel.send(message_input.value);
-          list_messages.value =
-            "Me: " + message_input.value + "\n" + list_messages.value;
-          message_input.value = "";
-          list_messages.scrollTop = 0;
-        });
-
         peers_list[chat_name] = peerConnection;
       }
       function chat_name() {
