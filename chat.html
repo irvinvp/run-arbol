@@ -53,7 +53,14 @@
               peers_list[message.name].createAnswer().then((answer) => {
                 peers_list[message.name].setLocalDescription(answer);
                 answer = JSON.parse(JSON.stringify(answer));
-                socket.send(JSON.stringify({ ...answer, name: message.name }));
+                console.log(answer);
+                socket.send(
+                  JSON.stringify({
+                    ...answer,
+                    name: message.name,
+                    priv_: "answer",
+                  })
+                );
               });
             } else if (message.type === "answer") {
               peers_list[message.name].setRemoteDescription(
@@ -110,7 +117,13 @@
         });
         peerConnection.addEventListener("icecandidate", (event) => {
           if (event.candidate) {
-            socket.send(JSON.stringify({ ...event.candidate, name: me_name }));
+            socket.send(
+              JSON.stringify({
+                ...event.candidate,
+                name: me_name,
+                priv_: "icecandidate",
+              })
+            );
           }
         });
         peerConnection.addEventListener("datachannel", (event) => {
@@ -175,7 +188,9 @@
         peerConnection.createOffer().then((offer) => {
           peerConnection.setLocalDescription(offer);
           offer = JSON.parse(JSON.stringify(offer));
-          socket.send(JSON.stringify({ ...offer, name: me_name }));
+          socket.send(
+            JSON.stringify({ ...offer, name: me_name, priv_: "offer" })
+          );
         });
 
         send_button.addEventListener("click", () => {
