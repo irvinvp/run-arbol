@@ -47,6 +47,7 @@
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
             if (message.type === "offer") {
+              console.log("offer", message);
               peers_list[message.name].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
