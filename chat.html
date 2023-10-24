@@ -144,26 +144,6 @@
             );
           }
         });
-        peerConnection.addEventListener("datachannel", (event) => {
-          console.log("reciviendo datachannel");
-          dataChannel = event.channel;
-          dataChannel.addEventListener("open", () => {});
-          dataChannel.addEventListener("message", (event) => {
-            list_messages.value =
-              "Peer DT " +
-              chat_name +
-              ": " +
-              event.data +
-              "\n" +
-              list_messages.value;
-            list_messages.scrollTop = 0;
-            if (event.data === "ping") {
-              dataChannel.send("pong");
-            }
-          });
-          dataChannel.addEventListener("close", () => {});
-          data_list[chat_name] = dataChannel;
-        });
         peerConnection.addEventListener("connectionstatechange", (event) => {
           if (peerConnection.connectionState === "connected") {
             console.log("Peers WebRTC conexión establecida", chat_name);
