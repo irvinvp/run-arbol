@@ -145,6 +145,7 @@
           }
         });
         peerConnection.addEventListener("datachannel", (event) => {
+          console.log("reciviendo datachannel");
           dataChannel = event.channel;
           dataChannel.addEventListener("open", () => {});
           dataChannel.addEventListener("message", (event) => {
