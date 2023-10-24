@@ -48,14 +48,12 @@
           if (message.name == me_name) {
             if (!peers_list[message.org_]) peers(message.org_, socket, "none");
             if (message.type === "offer") {
-              console.log("offer", message);
               peers_list[message.org_].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
               peers_list[message.org_].createAnswer().then((answer) => {
                 peers_list[message.org_].setLocalDescription(answer);
                 answer = JSON.parse(JSON.stringify(answer));
-                console.log(answer);
                 socket.send(
                   JSON.stringify({
                     ...answer,
@@ -121,7 +119,6 @@
         peerConnection.addEventListener("icecandidate", (event) => {
           if (event.candidate) {
             let candidate = JSON.parse(JSON.stringify(event.candidate));
-            console.log(candidate);
             socket.send(
               JSON.stringify({
                 ...candidate,
