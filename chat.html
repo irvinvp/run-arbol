@@ -29,49 +29,131 @@
       let status = document.getElementById("status");
       let data_status = document.getElementById("data_status");
 
-      // WebRTC
-      let peerConnection = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: "stun:stun.relay.metered.ca:80",
-          },
-          {
-            urls: "turn:a.relay.metered.ca:80",
-            username: "ccb803a53ccc0887680ef973",
-            credential: "4eR9jWY5e1d2G7F4",
-          },
-          {
-            urls: "turn:a.relay.metered.ca:80?transport=tcp",
-            username: "ccb803a53ccc0887680ef973",
-            credential: "4eR9jWY5e1d2G7F4",
-          },
-          {
-            urls: "turn:a.relay.metered.ca:443",
-            username: "ccb803a53ccc0887680ef973",
-            credential: "4eR9jWY5e1d2G7F4",
-          },
-          {
-            urls: "turn:a.relay.metered.ca:443?transport=tcp",
-            username: "ccb803a53ccc0887680ef973",
-            credential: "4eR9jWY5e1d2G7F4",
-          },
-        ],
-      });
-      peerConnection.addEventListener("icecandidate", (event) => {
-        if (event.candidate) {
-          socket.send(JSON.stringify(event.candidate));
-        }
-      });
-      peerConnection.addEventListener("datachannel", (event) => {
-        dataChannel = event.channel;
-        console.log("DataChannel", dataChannel);
+      let me_name = chat_name();
+
+      // WebSocket
+      let socket = new WebSocket("wss://ws-gw.omnitracs.online");
+      socket.onopen = () => {
+        console.log("WebSocket conexión establecida");
+        socket.send(JSON.stringify({ type: "join", name: me_name }));
+        socket.onmessage = (event) => {
+          let message = JSON.parse(event.data);
+          if (message.name == me_name) {
+            if (message.type === "offer") {
+              peerConnection.setRemoteDescription(
+                new RTCSessionDescription(message)
+              );
+              peerConnection.createAnswer().then((answer) => {
+                peerConnection.setLocalDescription(answer);
+                socket.send(JSON.stringify(answer));
+              });
+            } else if (message.type === "answer") {
+              peerConnection.setRemoteDescription(
+                new RTCSessionDescription(message)
+              );
+            } else if (message.candidate) {
+              peerConnection.addIceCandidate(message);
+            }
+          } else if (message.type === "join") {
+            list_messages.value =
+              "Peer: " +
+              message.name +
+              " se ha unido al chat\n" +
+              list_messages.value;
+            list_messages.scrollTop = 0;
+            peers(message.name, socket);
+          }
+        };
+        setInterval(() => {
+          socket.send(JSON.stringify({ type: "ping" }));
+        }, 30000);
+      };
+      socket.onclose = () => {
+        console.log("WebSocket conexión cerrada");
+      };
+
+      async function peers(chat_name, socket) {
+        let peerConnection = new RTCPeerConnection({
+          iceServers: [
+            {
+              urls: "stun:stun.relay.metered.ca:80",
+            },
+            {
+              urls: "turn:a.relay.metered.ca:80",
+              username: "ccb803a53ccc0887680ef973",
+              credential: "4eR9jWY5e1d2G7F4",
+            },
+            {
+              urls: "turn:a.relay.metered.ca:80?transport=tcp",
+              username: "ccb803a53ccc0887680ef973",
+              credential: "4eR9jWY5e1d2G7F4",
+            },
+            {
+              urls: "turn:a.relay.metered.ca:443",
+              username: "ccb803a53ccc0887680ef973",
+              credential: "4eR9jWY5e1d2G7F4",
+            },
+            {
+              urls: "turn:a.relay.metered.ca:443?transport=tcp",
+              username: "ccb803a53ccc0887680ef973",
+              credential: "4eR9jWY5e1d2G7F4",
+            },
+          ],
+        });
+        peerConnection.addEventListener("icecandidate", (event) => {
+          if (event.candidate) {
+            socket.send(JSON.stringify({ ...event.candidate, name: me_name }));
+          }
+        });
+        peerConnection.addEventListener("datachannel", (event) => {
+          dataChannel = event.channel;
+          dataChannel.addEventListener("open", () => {
+            send_button.disabled = false;
+            data_status.innerText = "Channel: Connected";
+          });
+          dataChannel.addEventListener("message", (event) => {
+            list_messages.value =
+              "Peer" +
+              chat_name +
+              ": " +
+              event.data +
+              "\n" +
+              list_messages.value;
+            list_messages.scrollTop = 0;
+            if (event.data === "ping") {
+              dataChannel.send("pong");
+            }
+          });
+          dataChannel.addEventListener("close", () => {
+            send_button.disabled = true;
+            data_status.innerText = "Channel: Disconnected";
+          });
+        });
+        peerConnection.addEventListener("connectionstatechange", (event) => {
+          if (peerConnection.connectionState === "connected") {
+            console.log("Peers WebRTC conexión establecida", chat_name);
+            status.innerText = "Status: Online";
+          }
+          if (peerConnection.connectionState === "disconnected") {
+            console.log("Peers WebRTC conexión cerrada", chat_name);
+            data_status.innerText = "Channel: Disconnected";
+            status.innerText = "Status: Offline";
+            send_button.disabled = true;
+          }
+        });
+        let dataChannel = peerConnection.createDataChannel(chat_name);
         dataChannel.addEventListener("open", () => {
           send_button.disabled = false;
           data_status.innerText = "Channel: Connected";
         });
         dataChannel.addEventListener("message", (event) => {
           list_messages.value =
-            "Peer: " + event.data + "\n" + list_messages.value;
+            "Peer " +
+            chat_name +
+            ": " +
+            event.data +
+            "\n" +
+            list_messages.value;
           list_messages.scrollTop = 0;
           if (event.data === "ping") {
             dataChannel.send("pong");
@@ -81,85 +163,26 @@
           send_button.disabled = true;
           data_status.innerText = "Channel: Disconnected";
         });
-      });
-      peerConnection.addEventListener("connectionstatechange", (event) => {
-        if (peerConnection.connectionState === "connected") {
-          console.log("Peers WebRTC conexión establecida");
-          status.innerText = "Status: Online";
-        }
-        if (peerConnection.connectionState === "disconnected") {
-          console.log("Peers WebRTC conexión cerrada");
-          data_status.innerText = "Channel: Disconnected";
-          status.innerText = "Status: Offline";
-          send_button.disabled = true;
-        }
-      });
-      let dataChannel = peerConnection.createDataChannel(chat_name());
-      dataChannel.addEventListener("open", () => {
-        send_button.disabled = false;
-        data_status.innerText = "Channel: Connected";
-      });
-      dataChannel.addEventListener("message", (event) => {
-        list_messages.value =
-          "Peer: " + event.data + "\n" + list_messages.value;
-        list_messages.scrollTop = 0;
-        if (event.data === "ping") {
-          dataChannel.send("pong");
-        }
-      });
-      dataChannel.addEventListener("close", () => {
-        send_button.disabled = true;
-        data_status.innerText = "Channel: Disconnected";
-      });
-      
-      send_button.addEventListener("click", () => {
-        dataChannel.send(message_input.value);
-        list_messages.value =
-          "Me: " + message_input.value + "\n" + list_messages.value;
-        message_input.value = "";
-        list_messages.scrollTop = 0;
-      });
-      message_input.addEventListener("keyup", (event) => {
-        if (event.keyCode === 13) {
-          event.preventDefault();
-          send_button.click();
-        }
-      });
 
-      // WebSocket
-      let socket = new WebSocket("wss://ws-gw.omnitracs.online");
-      socket.onopen = () => {
-        console.log("WebSocket conexión establecida");
-        socket.onmessage = (event) => {
-          let message = JSON.parse(event.data);
-          if (message.type === "offer") {
-            peerConnection.setRemoteDescription(
-              new RTCSessionDescription(message)
-            );
-            peerConnection.createAnswer().then((answer) => {
-              peerConnection.setLocalDescription(answer);
-              socket.send(JSON.stringify(answer));
-            });
-          } else if (message.type === "answer") {
-            peerConnection.setRemoteDescription(
-              new RTCSessionDescription(message)
-            );
-          } else if (message.candidate) {
-            peerConnection.addIceCandidate(message);
-          }
-        };
         peerConnection.createOffer().then((offer) => {
           peerConnection.setLocalDescription(offer);
-          socket.send(JSON.stringify(offer));
+          socket.send(JSON.stringify({ ...offer, name: me_name }));
         });
-        setInterval(() => {
-          socket.send(JSON.stringify({ type: "ping" }));
-        }, 30000);
-      };
-      socket.onclose = () => {
-        console.log("WebSocket conexión cerrada");
-      };
 
+        send_button.addEventListener("click", () => {
+          dataChannel.send(message_input.value);
+          list_messages.value =
+            "Me: " + message_input.value + "\n" + list_messages.value;
+          message_input.value = "";
+          list_messages.scrollTop = 0;
+        });
+        message_input.addEventListener("keyup", (event) => {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            send_button.click();
+          }
+        });
+      }
       function chat_name() {
         let caracteres =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
