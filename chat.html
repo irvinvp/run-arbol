@@ -42,18 +42,17 @@
       let socket = new WebSocket("wss://ws-gw.omnitracs.online");
       socket.onopen = () => {
         console.log("WebSocket conexión establecida");
-        peers(me_name, socket, "join");
-        socket.send(JSON.stringify({ type: "join", name: me_name }));
+        socket.send(JSON.stringify({ type: "join", org_: me_name }));
         socket.onmessage = (event) => {
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
             if (message.type === "offer") {
               console.log("offer", message);
-              peers_list[message.name].setRemoteDescription(
+              peers_list[message.org_].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
-              peers_list[message.name].createAnswer().then((answer) => {
-                peers_list[message.name].setLocalDescription(answer);
+              peers_list[message.org_].createAnswer().then((answer) => {
+                peers_list[message.org_].setLocalDescription(answer);
                 answer = JSON.parse(JSON.stringify(answer));
                 console.log(answer);
                 socket.send(
@@ -61,24 +60,25 @@
                     ...answer,
                     name: message.name,
                     priv_: "answer",
+                    org_: me_name,
                   })
                 );
               });
             } else if (message.type === "answer") {
-              peers_list[message.name].setRemoteDescription(
+              peers_list[message.org_].setRemoteDescription(
                 new RTCSessionDescription(message)
               );
             } else if (message.candidate) {
-              peers_list[message.name].addIceCandidate(message);
+              peers_list[message.org_].addIceCandidate(message);
             }
           } else if (message.type === "join") {
             list_messages.value =
               "Peer: " +
-              message.name +
+              message.org_ +
               " se ha unido al chat\n" +
               list_messages.value;
             list_messages.scrollTop = 0;
-            peers(message.name, socket, "join");
+            peers(message.org_, socket, "join");
           }
         };
         setInterval(() => {
@@ -126,6 +126,7 @@
                 ...candidate,
                 name: chat_name,
                 priv_: "icecandidate",
+                org_: me_name,
               })
             );
           }
@@ -194,7 +195,12 @@
             peerConnection.setLocalDescription(offer);
             offer = JSON.parse(JSON.stringify(offer));
             socket.send(
-              JSON.stringify({ ...offer, name: chat_name, priv_: "offer" })
+              JSON.stringify({
+                ...offer,
+                name: chat_name,
+                priv_: "offer",
+                org_: me_name,
+              })
             );
           });
         }
