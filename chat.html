@@ -46,6 +46,7 @@
         socket.onmessage = (event) => {
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
+            if (!peers_list[message.org_]) peers(message.org_, socket, "join");
             if (message.type === "offer") {
               console.log("offer", message);
               peers_list[message.org_].setRemoteDescription(
