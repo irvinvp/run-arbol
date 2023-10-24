@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <div>
-      <p id="status">Status: Offline</p>
-      <p id="data_status">Channel: Disconnected</p>
-    </div>
     <div style="margin-bottom: 10px">
       <input type="text" id="message" />
       <button id="send" disabled>Send</button>
@@ -29,8 +25,7 @@
       let message_input = document.getElementById("message");
       let send_button = document.getElementById("send");
       let list_messages = document.getElementById("list_messages");
-      let status = document.getElementById("status");
-      let data_status = document.getElementById("data_status");
+
       message_input.addEventListener("keyup", (event) => {
         if (event.keyCode === 13) {
           event.preventDefault();
@@ -145,10 +140,7 @@
         });
         peerConnection.addEventListener("datachannel", (event) => {
           dataChannel = event.channel;
-          dataChannel.addEventListener("open", () => {
-            send_button.disabled = false;
-            data_status.innerText = "Channel: Connected";
-          });
+          dataChannel.addEventListener("open", () => {});
           dataChannel.addEventListener("message", (event) => {
             list_messages.value =
               "Peer" +
@@ -162,29 +154,19 @@
               dataChannel.send("pong");
             }
           });
-          dataChannel.addEventListener("close", () => {
-            send_button.disabled = true;
-            data_status.innerText = "Channel: Disconnected";
-          });
+          dataChannel.addEventListener("close", () => {});
           data_list[chat_name] = dataChannel;
         });
         peerConnection.addEventListener("connectionstatechange", (event) => {
           if (peerConnection.connectionState === "connected") {
             console.log("Peers WebRTC conexión establecida", chat_name);
-            status.innerText = "Status: Online";
           }
           if (peerConnection.connectionState === "disconnected") {
             console.log("Peers WebRTC conexión cerrada", chat_name);
-            data_status.innerText = "Channel: Disconnected";
-            status.innerText = "Status: Offline";
-            send_button.disabled = true;
           }
         });
         let dataChannel = peerConnection.createDataChannel(chat_name);
-        dataChannel.addEventListener("open", () => {
-          send_button.disabled = false;
-          data_status.innerText = "Channel: Connected";
-        });
+        dataChannel.addEventListener("open", () => {});
         dataChannel.addEventListener("message", (event) => {
           list_messages.value =
             "Peer " +
@@ -198,10 +180,7 @@
             dataChannel.send("pong");
           }
         });
-        dataChannel.addEventListener("close", () => {
-          send_button.disabled = true;
-          data_status.innerText = "Channel: Disconnected";
-        });
+        dataChannel.addEventListener("close", () => {});
         data_list[chat_name] = dataChannel;
 
         if (type == "join") {
