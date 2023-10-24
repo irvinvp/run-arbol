@@ -147,6 +147,8 @@
         peerConnection.addEventListener("connectionstatechange", (event) => {
           if (peerConnection.connectionState === "connected") {
             console.log("Peers WebRTC conexión establecida", chat_name);
+            list_messages.value =
+              "Peer: " + chat_name + " se ha conectado\n" + list_messages.value;
           }
           if (peerConnection.connectionState === "disconnected") {
             console.log("Peers WebRTC conexión cerrada", chat_name);
