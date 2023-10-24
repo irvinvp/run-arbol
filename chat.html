@@ -117,6 +117,7 @@
         });
         peerConnection.addEventListener("icecandidate", (event) => {
           if (event.candidate) {
+            event.candidate = JSON.parse(JSON.stringify(event.candidate));
             socket.send(
               JSON.stringify({
                 ...event.candidate,
