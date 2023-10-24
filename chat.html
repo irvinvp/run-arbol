@@ -46,7 +46,7 @@
         socket.onmessage = (event) => {
           let message = JSON.parse(event.data);
           if (message.name == me_name) {
-            if (!peers_list[message.name]) peers(message.name, socket);
+            if (!peers_list[message.name]) peers(message.name, socket, "none");
             if (message.type === "offer") {
               console.log("offer", message);
               peers_list[message.name].setRemoteDescription(
@@ -78,7 +78,7 @@
               " se ha unido al chat\n" +
               list_messages.value;
             list_messages.scrollTop = 0;
-            peers(message.name, socket);
+            peers(message.name, socket, "join");
           }
         };
         setInterval(() => {
@@ -89,7 +89,7 @@
         console.log("WebSocket conexión cerrada");
       };
 
-      function peers(chat_name, socket) {
+      function peers(chat_name, socket, type) {
         let peerConnection = new RTCPeerConnection({
           iceServers: [
             {
@@ -190,13 +190,15 @@
           data_status.innerText = "Channel: Disconnected";
         });
 
-        peerConnection.createOffer().then((offer) => {
-          peerConnection.setLocalDescription(offer);
-          offer = JSON.parse(JSON.stringify(offer));
-          socket.send(
-            JSON.stringify({ ...offer, name: chat_name, priv_: "offer" })
-          );
-        });
+        if (type == "join") {
+          peerConnection.createOffer().then((offer) => {
+            peerConnection.setLocalDescription(offer);
+            offer = JSON.parse(JSON.stringify(offer));
+            socket.send(
+              JSON.stringify({ ...offer, name: chat_name, priv_: "offer" })
+            );
+          });
+        }
 
         send_button.addEventListener("click", () => {
           dataChannel.send(message_input.value);
