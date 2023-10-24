@@ -77,7 +77,7 @@
               " se ha unido al chat\n" +
               list_messages.value;
             list_messages.scrollTop = 0;
-            peers_list[message.name] = peers(message.name, socket);
+            peers(message.name, socket);
           }
         };
         setInterval(() => {
@@ -116,6 +116,7 @@
             },
           ],
         });
+        peers_list[chat_name] = peerConnection;
         peerConnection.addEventListener("icecandidate", (event) => {
           if (event.candidate) {
             let candidate = JSON.parse(JSON.stringify(event.candidate));
@@ -203,7 +204,6 @@
           message_input.value = "";
           list_messages.scrollTop = 0;
         });
-        return peerConnection;
       }
       function chat_name() {
         let caracteres =
