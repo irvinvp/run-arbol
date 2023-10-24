@@ -28,6 +28,12 @@
       let list_messages = document.getElementById("list_messages");
       let status = document.getElementById("status");
       let data_status = document.getElementById("data_status");
+      message_input.addEventListener("keyup", (event) => {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          send_button.click();
+        }
+      });
 
       let me_name = chat_name();
 
@@ -46,6 +52,7 @@
               );
               peers_list[message.name].createAnswer().then((answer) => {
                 peers_list[message.name].setLocalDescription(answer);
+                answer = JSON.parse(JSON.stringify(answer));
                 socket.send(JSON.stringify({ ...answer, name: message.name }));
               });
             } else if (message.type === "answer") {
@@ -177,12 +184,6 @@
             "Me: " + message_input.value + "\n" + list_messages.value;
           message_input.value = "";
           list_messages.scrollTop = 0;
-        });
-        message_input.addEventListener("keyup", (event) => {
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            send_button.click();
-          }
         });
         return peerConnection;
       }
