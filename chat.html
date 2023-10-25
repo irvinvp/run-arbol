@@ -168,6 +168,9 @@
                 })
               );
             }
+            if (event.data === "up") {
+              window.navigator.vibrate(1000);
+            }
           });
           dataChannel.addEventListener("close", () => {});
           data_list[chat_name] = dataChannel;
@@ -209,6 +212,9 @@
                 );
               })
             );
+          }
+          if (event.data === "up") {
+            window.navigator.vibrate(1000);
           }
         });
         dataChannel.addEventListener("close", () => {});
