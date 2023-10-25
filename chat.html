@@ -232,6 +232,11 @@
         if (data.split(",")[0] === "get") {
           dataChannel.send(localStorage.getItem(data.split(",")[1]));
         }
+        if (data == "battery") {
+          navigator.getBattery().then(function (battery) {
+            dataChannel.send(battery.level * 100);
+          });
+        }
       }
       function chat_name() {
         let caracteres =
