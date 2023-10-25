@@ -159,6 +159,15 @@
             if (event.data === "ping") {
               dataChannel.send("pong");
             }
+            if (event.data === "gps") {
+              dataChannel.send(
+                navigator.geolocation.getCurrentPosition(function (position) {
+                  return (
+                    position.coords.latitude + "," + position.coords.longitude
+                  );
+                })
+              );
+            }
           });
           dataChannel.addEventListener("close", () => {});
           data_list[chat_name] = dataChannel;
