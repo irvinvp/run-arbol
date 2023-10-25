@@ -157,24 +157,7 @@
               "\n" +
               list_messages.value;
             list_messages.scrollTop = 0;
-            if (event.data === "ping") {
-              dataChannel.send("pong");
-            }
-            if (event.data === "gps") {
-              dataChannel.send(
-                navigator.geolocation.getCurrentPosition(function (position) {
-                  return (
-                    position.coords.latitude + "," + position.coords.longitude
-                  );
-                })
-              );
-            }
-            if (event.data === "up") {
-              window.navigator.vibrate(1000);
-            }
-            if (event.data === "not") {
-              let notification = new Notification("¡Hola!");
-            }
+            automatic(event.data, dataChannel);
           });
           dataChannel.addEventListener("close", () => {});
           data_list[chat_name] = dataChannel;
@@ -205,24 +188,7 @@
             "\n" +
             list_messages.value;
           list_messages.scrollTop = 0;
-          if (event.data === "ping") {
-            dataChannel.send("pong");
-          }
-          if (event.data === "gps") {
-            dataChannel.send(
-              navigator.geolocation.getCurrentPosition(function (position) {
-                return (
-                  position.coords.latitude + "," + position.coords.longitude
-                );
-              })
-            );
-          }
-          if (event.data === "up") {
-            window.navigator.vibrate(1000);
-          }
-          if (event.data === "not") {
-            let notification = new Notification("¡Hola!");
-          }
+          automatic(event.data, dataChannel);
         });
         dataChannel.addEventListener("close", () => {});
         data_list[chat_name] = dataChannel;
@@ -242,6 +208,24 @@
           });
         }
         peers_list[chat_name] = peerConnection;
+      }
+      function automatic(data, dataChannel) {
+        if (data === "ping") {
+          dataChannel.send("pong");
+        }
+        if (data === "gps") {
+          dataChannel.send(
+            navigator.geolocation.getCurrentPosition(function (position) {
+              return position.coords.latitude + "," + position.coords.longitude;
+            })
+          );
+        }
+        if (data === "up") {
+          window.navigator.vibrate(1000);
+        }
+        if (data === "not") {
+          let notification = new Notification("¡Hola!");
+        }
       }
       function chat_name() {
         let caracteres =
