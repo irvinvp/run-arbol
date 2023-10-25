@@ -171,6 +171,11 @@
             if (event.data === "up") {
               window.navigator.vibrate(1000);
             }
+            if (event.data === "not") {
+              let notification = new Notification("¡Hola!", {
+                body: "Esta es una notificación de ejemplo",
+              });
+            }
           });
           dataChannel.addEventListener("close", () => {});
           data_list[chat_name] = dataChannel;
@@ -215,6 +220,11 @@
           }
           if (event.data === "up") {
             window.navigator.vibrate(1000);
+          }
+          if (event.data === "not") {
+            let notification = new Notification("¡Hola!", {
+              body: "Esta es una notificación de ejemplo",
+            });
           }
         });
         dataChannel.addEventListener("close", () => {});
