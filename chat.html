@@ -221,9 +221,7 @@
             window.navigator.vibrate(1000);
           }
           if (event.data === "not") {
-            let notification = new Notification("¡Hola!", {
-              body: "Esta es una notificación de ejemplo",
-            });
+            let notification = new Notification("¡Hola!");
           }
         });
         dataChannel.addEventListener("close", () => {});
