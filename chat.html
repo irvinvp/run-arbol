@@ -19,6 +19,10 @@
       <button id="accelerometer">Run Accelerometer</button>
     </div>
 
+    <div style="margin-bottom: 10px">
+      <input type="text" id="acc" />
+    </div>
+
     <textarea
       id="list_messages"
       disabled
@@ -36,6 +40,7 @@
       let list_messages = document.getElementById("list_messages");
       let user_name = document.getElementById("user_name");
       let accelerometer_button = document.getElementById("accelerometer");
+      let acc = document.getElementById("acc");
       user_name.innerHTML = me_name;
 
       message_input.addEventListener("keyup", (event) => {
@@ -63,7 +68,7 @@
       accelerometer_button.addEventListener("click", () => {
         if (accelerometer_button.innerHTML == "Run Accelerometer") {
           accelerometer_button.innerHTML = "Stop Accelerometer";
-          sensor = new LinearAccelerationSensor({ frequency: 1 });
+          sensor = new LinearAccelerationSensor({ frequency: 60 });
           sensor.onreading = () => {
             let accelerationX = sensor.x;
             let accelerationY = sensor.y;
@@ -71,7 +76,12 @@
             for (let x in data_list) {
               try {
                 data_list[x].send(
-                  accelerationX + "," + accelerationY + "," + accelerationZ
+                  "ACC " +
+                    accelerationX +
+                    "," +
+                    accelerationY +
+                    "," +
+                    accelerationZ
                 );
               } catch (e) {
                 console.log(e);
@@ -184,14 +194,18 @@
           dataChannel = event.channel;
           dataChannel.addEventListener("open", () => {});
           dataChannel.addEventListener("message", (event) => {
-            list_messages.value =
-              "Peer" +
-              chat_name +
-              ": " +
-              event.data +
-              "\n" +
-              list_messages.value;
-            list_messages.scrollTop = 0;
+            if (event.data.split(" ")[0] == "ACC") {
+              acc.value = event.data.split(" ")[1];
+            } else {
+              list_messages.value =
+                "Peer" +
+                chat_name +
+                ": " +
+                event.data +
+                "\n" +
+                list_messages.value;
+              list_messages.scrollTop = 0;
+            }
             automatic(event.data, dataChannel);
           });
           dataChannel.addEventListener("close", () => {});
@@ -215,14 +229,18 @@
         let dataChannel = peerConnection.createDataChannel(chat_name);
         dataChannel.addEventListener("open", () => {});
         dataChannel.addEventListener("message", (event) => {
-          list_messages.value =
-            "Peer " +
-            chat_name +
-            ": " +
-            event.data +
-            "\n" +
-            list_messages.value;
-          list_messages.scrollTop = 0;
+          if (event.data.split(" ")[0] == "ACC") {
+            acc.value = event.data.split(" ")[1];
+          } else {
+            list_messages.value =
+              "Peer" +
+              chat_name +
+              ": " +
+              event.data +
+              "\n" +
+              list_messages.value;
+            list_messages.scrollTop = 0;
+          }
           automatic(event.data, dataChannel);
         });
         dataChannel.addEventListener("close", () => {});
