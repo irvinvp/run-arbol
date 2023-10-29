@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Linear Acceleration Sensor Example</title>
+  </head>
+  <body>
+    <h1>Linear Acceleration Sensor Example</h1>
+    <input type="text" id="outputTextbox" readonly />
+
+    <script>
+      // Verificar si el navegador es compatible con el sensor de aceleración lineal
+      if ("LinearAccelerationSensor" in window) {
+        // Crear una instancia del sensor de aceleración lineal
+        const sensor = new LinearAccelerationSensor();
+
+        // Obtener el elemento del textbox de salida
+        const outputTextbox = document.getElementById("outputTextbox");
+
+        // Evento que se dispara cada vez que se obtienen nuevos datos del sensor
+        sensor.onreading = () => {
+          // Obtener los valores de aceleración lineal en los ejes x, y, z
+          const accelerationX = sensor.x;
+          const accelerationY = sensor.y;
+          const accelerationZ = sensor.z;
+
+          // Actualizar el valor del textbox con los valores de aceleración
+          outputTextbox.value = `Aceleración Lineal (X, Y, Z): ${accelerationX}, ${accelerationY}, ${accelerationZ}`;
+        };
+
+        // Comenzar la lectura del sensor
+        sensor.start();
+      } else {
+        outputTextbox.value =
+          "El sensor de aceleración lineal no es compatible con este navegador.";
+      }
+    </script>
+  </body>
+</html>
