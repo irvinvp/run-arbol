@@ -125,6 +125,7 @@
         chart.data.datasets[1].data.push(y);
         chart.data.datasets[2].data.push(z);
         if (chart.data.labels.length > 20) {
+          chart.data.labels.shift();
           chart.data.datasets[0].data.shift();
           chart.data.datasets[1].data.shift();
           chart.data.datasets[2].data.shift();
