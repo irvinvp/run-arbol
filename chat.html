@@ -15,6 +15,10 @@
       <button id="send">Send</button>
     </div>
 
+    <div style="margin-bottom: 10px">
+      <button id="accelerometer">Run Accelerometer</button>
+    </div>
+
     <textarea
       id="list_messages"
       disabled
@@ -31,6 +35,7 @@
       let send_button = document.getElementById("send");
       let list_messages = document.getElementById("list_messages");
       let user_name = document.getElementById("user_name");
+      let accelerometer_button = document.getElementById("accelerometer");
       user_name.innerHTML = me_name;
 
       message_input.addEventListener("keyup", (event) => {
@@ -52,6 +57,27 @@
           "Me: " + message_input.value + "\n" + list_messages.value;
         message_input.value = "";
         list_messages.scrollTop = 0;
+      });
+
+      accelerometer_button.addEventListener("click", () => {
+        if (accelerometer_button.innerHTML == "Run Accelerometer") {
+          accelerometer_button.innerHTML = "Stop Accelerometer";
+          let laSensor = new LinearAccelerationSensor({ frequency: 60 });
+          laSensor.addEventListener("reading", () => {
+            for (let x in data_list) {
+              try {
+                data_list[x].send(
+                  laSensor.x + "," + laSensor.y + "," + laSensor.z
+                );
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          });
+        } else {
+          accelerometer_button.innerHTML = "Run Accelerometer";
+          window.removeEventListener("devicemotion", (event) => {});
+        }
       });
 
       // WebSocket
