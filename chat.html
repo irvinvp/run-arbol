@@ -63,7 +63,7 @@
       accelerometer_button.addEventListener("click", () => {
         if (accelerometer_button.innerHTML == "Run Accelerometer") {
           accelerometer_button.innerHTML = "Stop Accelerometer";
-          sensor = new LinearAccelerationSensor({ frequency: 60 });
+          sensor = new LinearAccelerationSensor({ frequency: 1 });
           sensor.onreading = () => {
             let accelerationX = sensor.x;
             let accelerationY = sensor.y;
