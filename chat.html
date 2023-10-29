@@ -76,7 +76,8 @@
           });
         } else {
           accelerometer_button.innerHTML = "Run Accelerometer";
-          window.removeEventListener("devicemotion", (event) => {});
+          window.removeEventListener("reading", (event) => {});
+          laSensor.stop();
         }
       });
 
