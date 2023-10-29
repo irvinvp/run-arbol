@@ -59,24 +59,33 @@
         list_messages.scrollTop = 0;
       });
 
+      let sensor;
       accelerometer_button.addEventListener("click", () => {
         if (accelerometer_button.innerHTML == "Run Accelerometer") {
           accelerometer_button.innerHTML = "Stop Accelerometer";
-          let laSensor = new LinearAccelerationSensor({ frequency: 60 });
-          laSensor.addEventListener("reading", () => {
+          sensor = new LinearAccelerationSensor({ frequency: 60 });
+          sensor.onreading = () => {
+            let accelerationX = sensor.x;
+            let accelerationY = sensor.y;
+            let accelerationZ = sensor.z;
             for (let x in data_list) {
               try {
                 data_list[x].send(
-                  laSensor.x + "," + laSensor.y + "," + laSensor.z
+                  accelerationX + "," + accelerationY + "," + accelerationZ
                 );
               } catch (e) {
-                alert(e);
+                console.log(e);
               }
             }
-          });
+            sensor.start();
+          };
         } else {
           accelerometer_button.innerHTML = "Run Accelerometer";
-          window.removeEventListener("reading", (event) => {});
+          try {
+            sensor.stop();
+          } catch (e) {
+            console.log(e);
+          }
         }
       });
 
