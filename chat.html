@@ -32,50 +32,6 @@
 
     <canvas id="accelerometerChart"></canvas>
     <script>
-      var ctx = document.getElementById("accelerometerChart").getContext("2d");
-      var chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [
-            {
-              label: "Acelerómetro en X",
-              data: [],
-              borderColor: "red",
-              backgroundColor: "transparent",
-              borderWidth: 1,
-            },
-            {
-              label: "Acelerómetro en Y",
-              data: [],
-              borderColor: "green",
-              backgroundColor: "transparent",
-              borderWidth: 1,
-            },
-            {
-              label: "Acelerómetro en Z",
-              data: [],
-              borderColor: "blue",
-              backgroundColor: "transparent",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            x: {
-              display: true,
-            },
-            y: {
-              display: true,
-            },
-          },
-        },
-      });
-      // Crear contexto del gráfico
-      var ctx = document.getElementById("accelerometerChart").getContext("2d");
-
       // Crear instancia del gráfico
       var chart = new Chart(ctx, {
         type: "line",
@@ -115,6 +71,8 @@
               display: true,
               suggestedMin: -1,
               suggestedMax: 1,
+              min: -20,
+              max: 20,
             },
           },
         },
