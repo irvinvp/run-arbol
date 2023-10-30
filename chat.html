@@ -32,6 +32,9 @@
 
     <canvas id="accelerometerChart"></canvas>
     <script>
+      // Crear contexto del gráfico
+      var ctx = document.getElementById("accelerometerChart").getContext("2d");
+
       // Crear instancia del gráfico
       var chart = new Chart(ctx, {
         type: "line",
