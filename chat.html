@@ -113,6 +113,8 @@
             },
             y: {
               display: true,
+              suggestedMin: -1,
+              suggestedMax: 1,
             },
           },
         },
@@ -130,7 +132,7 @@
           chart.data.datasets[1].data.shift();
           chart.data.datasets[2].data.shift();
         }
-        chart.update();
+        chart.update("none");
       }
     </script>
     <script>
