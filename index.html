@@ -21,9 +21,7 @@
   <body>
     <p id="demo"></p>
     <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
-      Iniciar simulacion
-    </button>
-    <button onclick="send_mail()">Enviar mail</button>
+    <button onclick="send_mail()" disabled id="sendmail">Enviar mail</button>
     <div id="mapid"></div>
     <script>
       if ("serviceWorker" in navigator) {
@@ -405,6 +403,7 @@
       }
       function iniciar() {
         document.getElementById("iniciar_b").disabled = true;
+        document.getElementById("sendmail").disabled = false;
         status = 0;
         vuelta = 0;
         utterance.text = "Iniciando ruta.";
@@ -422,9 +421,11 @@
           Subject: "Lista de tiempos",
           Body: tiempos_lista.join(", "),
         }).then((message) => alert(message));
-        status = 0;
+        status = -1;
         vuelta = 0;
         tiempos_lista = [];
+        document.getElementById("iniciar_b").disabled = false;
+        document.getElementById("sendmail").disabled = true;
         utterance.text = "Enviando correo.";
         speak();
         window.navigator.vibrate(1000);
