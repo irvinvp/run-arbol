@@ -370,12 +370,17 @@
         }
       }
       function chat_name() {
+        // read localStorage
+        let name = localStorage.getItem("name");
+        if (name) return name;
+
         let caracteres =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         let nombre = "";
         for (let i = 0; i < 5; i++) {
           nombre += caracteres[Math.floor(Math.random() * caracteres.length)];
         }
+        localStorage.setItem("name", nombre);
         return nombre;
       }
     </script>
