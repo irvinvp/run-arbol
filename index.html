@@ -20,9 +20,9 @@
   <body>
     <p id="demo"></p>
     <button onclick="iniciar()" id="iniciar_b">Iniciar recorrido</button>
-    <button onclick="send_simultation()" id="sim_b" disabled>
       Iniciar simulacion
     </button>
+    <button onclick="send_mail()">Enviar mail</button>
     <div id="mapid"></div>
     <script>
       if ("serviceWorker" in navigator) {
@@ -119,6 +119,7 @@
         "decima",
       ];
       let last_coord = [0, 0];
+      let tiempos_lista = [];
 
       function getLocation() {
         if (navigator.geolocation) {
@@ -160,12 +161,13 @@
               pointInPolygon(
                 [position.coords.latitude, position.coords.longitude],
                 inicio
-              )
+              ) ||
+              true
             ) {
               status = 1;
               utterance.text = "En posicion de inicio.";
-              speak();
               window.navigator.vibrate(1000);
+              speak();
             }
           } else if (status == 1) {
             if (
@@ -175,13 +177,14 @@
                   [position.coords.latitude, position.coords.longitude],
                 ],
                 salida
-              )
+              ) ||
+              true
             ) {
               status = 2;
               utterance.text = "Iniciando carrera.";
               times = Date.now();
-              speak();
               window.navigator.vibrate(1000);
+              speak();
             }
           } else if (status == 2) {
             if (
@@ -196,8 +199,8 @@
               status = 3;
               utterance.text =
                 "Primer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
-              speak();
               window.navigator.vibrate(1000);
+              speak();
             }
           } else if (status == 3) {
             if (
@@ -212,8 +215,8 @@
               status = 4;
               utterance.text =
                 "Llegando a la mitad." + "Vuelta " + vueta_text[vuelta] + ".";
-              speak();
               window.navigator.vibrate(1000);
+              speak();
             }
           } else if (status == 4) {
             if (
@@ -228,8 +231,8 @@
               status = 5;
               utterance.text =
                 "Tercer cuarto." + "Vuelta " + vueta_text[vuelta] + ".";
-              speak();
               window.navigator.vibrate(1000);
+              speak();
             }
           } else if (status == 5) {
             if (
@@ -249,10 +252,11 @@
                 "Tiempo total: " +
                 parseInt((Date.now() - times) / 1000) +
                 " segundos.";
+              tiempos_lista.push(parseInt((Date.now() - times) / 1000));
+              window.navigator.vibrate(1000);
               speak();
               vuelta++;
               times = Date.now();
-              window.navigator.vibrate(1000);
             }
           }
 
@@ -405,6 +409,23 @@
         utterance.text = "Iniciando ruta.";
         speak();
         document.documentElement.requestFullscreen();
+        window.navigator.vibrate(1000);
+      }
+      function send_mail() {
+        Email.send({
+          Host: "smtp.elasticemail.com",
+          Username: "irvinvp@gmail.com",
+          Password: "7E8D84A54175D3F6BF01166963635C0B9FFE",
+          To: "irvinvp@gmail.com",
+          From: "test@automation100qb.site",
+          Subject: "Lista de tiempos",
+          Body: tiempos_lista.join(", "),
+        }).then((message) => alert(message));
+        status = 0;
+        vuelta = 0;
+        tiempos_lista = [];
+        utterance.text = "Enviando correo.";
+        speak();
         window.navigator.vibrate(1000);
       }
     </script>
