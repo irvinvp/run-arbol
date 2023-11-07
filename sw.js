@@ -13,7 +13,7 @@ if ("serviceWorker" in navigator) {
 // Instalar y activar el Service Worker
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("v1").then((cache) => {
+    caches.open("v2").then((cache) => {
       return cache.addAll([
         "/",
         "/index.html",
@@ -48,7 +48,7 @@ self.addEventListener("fetch", (event) => {
           return response;
         }
         return fetch(event.request).then((response) => {
-          return caches.open("mi-cache").then((cache) => {
+          return caches.open("v2").then((cache) => {
             cache.put(event.request, response.clone());
             return response;
           });
