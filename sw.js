@@ -17,8 +17,6 @@ self.addEventListener("install", (event) => {
       return cache.addAll([
         "/",
         "/index.html",
-        "/styles.css",
-        "/script.js",
         // Agrega aquí todas las rutas de las imágenes que deseas almacenar en caché
       ]);
     })
