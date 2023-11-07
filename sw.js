@@ -15,8 +15,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("v2").then((cache) => {
       return cache.addAll([
-        "/",
-        "/index.html",
+        "/lista.html",
         // Agrega aquí todas las rutas de las imágenes que deseas almacenar en caché
       ]);
     })
