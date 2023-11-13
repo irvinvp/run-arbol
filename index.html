@@ -31,6 +31,11 @@
         navigator.wakeLock.request("screen");
       } catch (e) {
         console.log(e);
+        try {
+          navigator.wakeLock.request("screen");
+        } catch (e) {
+          console.log(e);
+        }
       }
     </script>
     <script>
@@ -119,6 +124,7 @@
       ];
       let last_coord = [0, 0];
       let tiempos_lista = [];
+      let cuartos = [];
 
       function getLocation() {
         if (navigator.geolocation) {
@@ -164,9 +170,6 @@
               true
             ) {
               status = 1;
-              utterance.text = "En posicion de inicio.";
-              window.navigator.vibrate(1000);
-              speak();
             }
           } else if (status == 1) {
             if (
@@ -311,9 +314,14 @@
       var synthesis = window.speechSynthesis;
       var utterance = new SpeechSynthesisUtterance();
       utterance.lang = "es-ES";
-      utterance.text = "Iniciando ruta.";
+      utterance.text = "";
       function speak() {
-        synthesis.speak(utterance);
+        try {
+          synthesis.speak(utterance);
+        } catch (e) {
+          synthesis = window.speechSynthesis;
+          utterance = new SpeechSynthesisUtterance();
+        }
       }
 
       function convertirVelocidad(metrosPorSegundo) {
@@ -406,8 +414,6 @@
         document.getElementById("sendmail").disabled = false;
         status = 0;
         vuelta = 0;
-        utterance.text = "Iniciando ruta.";
-        speak();
         document.documentElement.requestFullscreen();
         window.navigator.vibrate(1000);
       }
@@ -418,7 +424,7 @@
           Password: "7E8D84A54175D3F6BF01166963635C0B9FFE",
           To: "irvinvp@gmail.com",
           From: "test@automation100qb.site",
-          Subject: "Lista de tiempos",
+          Subject: "Lista de tiempos " + new Date().toLocaleString(),
           Body: tiempos_lista.join(", "),
         }).then((message) => alert(message));
         status = -1;
